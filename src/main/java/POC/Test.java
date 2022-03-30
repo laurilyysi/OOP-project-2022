@@ -7,12 +7,36 @@ public class Test {
 
         List<Product> listCoop = Coop.searchProducts("leib");
 
-        for (Product prod : listCoop) System.out.println(prod.toString());
+        double priceCoop = 0;
+        double cheapestPriceCoop = Double.MAX_VALUE;
+        Product cheapestProductCoop = listCoop.get(0);
+        for (Product prod : listCoop) {
+            System.out.println(prod.toString());
+            priceCoop = prod.getPrice();
+            if (priceCoop <= cheapestPriceCoop){
+                cheapestProductCoop = prod;
+                cheapestPriceCoop = priceCoop;
+            }
+        }
         System.out.println(listCoop.size());
+        System.out.println("The cheapest of these is " + cheapestProductCoop.toString());
 
-        List<Product> listPrisma = Prisma.searchProducts("makaron");
+        List<Product> listPrisma = Prisma.searchProducts("leib");
 
-        for (Product prod : listPrisma) System.out.println(prod.toString());
+        double price = 0;
+        double cheapestPrice = Double.MAX_VALUE;
+        Product cheapestProduct = listPrisma.get(0);
+        for (Product prod : listPrisma) {
+            System.out.println(prod.toString());
+            price = prod.getPrice();
+            if (price <= cheapestPrice){
+                cheapestProduct = prod;
+                cheapestPrice = price;
+            }
+        }
+        System.out.println("the cheapest of these is " + cheapestProduct.toString());
         System.out.println(listPrisma.size());
+
+
     }
 }

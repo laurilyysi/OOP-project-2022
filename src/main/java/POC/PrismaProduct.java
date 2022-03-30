@@ -16,6 +16,14 @@ public class PrismaProduct implements Product {
         this.imgURL = imgURL;
     }
 
+    public double getPrice() {
+        return price;
+    }
+
+    public boolean isOnSale() {
+        return onSale;
+    }
+
     @Override
     public String toString() {
         return price + " €\t" + name;

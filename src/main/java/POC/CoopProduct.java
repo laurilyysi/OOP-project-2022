@@ -25,6 +25,10 @@ public class CoopProduct implements Product {
         };
     }
 
+    public double getPrice() {
+        return price;
+    }
+
     @Override
     public String toString() {
         return saleInfo() + price + " €\t" + name;

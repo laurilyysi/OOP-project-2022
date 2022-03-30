@@ -11,7 +11,10 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Prisma implements Store {
-
+    // TODO: 3/30/2022 Suggestion to make products that can be found by
+    //  this method, be searched by the links in prismamarket.ee that can
+    //  be accessed in the searchbar on the left side of the website. Products like these are "makaron", "riis", "Krõpsud".
+    //  This method would remove all unrelated products on these searches
     public static List<Product> searchProducts(String keyword) {
         List<Product> products = new ArrayList<Product>();
 
