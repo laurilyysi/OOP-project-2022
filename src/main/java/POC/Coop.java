@@ -6,6 +6,7 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -30,6 +31,8 @@ public class Coop implements Store {
         List<Product> allProducts = new ArrayList<>();
         List<Product> pageProducts;
 
+        int i = 0;
+
         do {
 
             try {
@@ -41,9 +44,11 @@ public class Coop implements Store {
                 waitForBox(driver);
                 pageProducts = scrapeBox(driver);
                 allProducts.addAll(pageProducts);
+            }finally {
+                i++;
             }
 
-        } while (nextPage(driver));
+        } while (nextPage(driver) && i < 3);
 
         driver.quit();
 
