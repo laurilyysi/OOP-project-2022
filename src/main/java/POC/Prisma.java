@@ -23,19 +23,22 @@ public class Prisma implements Store {
 
         driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 
-        WebElement shelf = driver.findElement(By.className("js-shelf"));
-        List<WebElement> items = shelf.findElements(By.className("js-shelf-item"));
+        List<WebElement> shelfs = driver.findElements(By.className("js-products-shelf"));//Products are split into different categories in prismamarket.ee
 
-        for (WebElement item : items) {
+        for (WebElement shelf : shelfs) {
+            List<WebElement> items = shelf.findElements(By.className("js-shelf-item"));
 
-            WebElement img = item.findElement(By.className("js-image-wrapper"));
-            String imgURL = img.findElement(By.tagName("img")).getAttribute("src");
-            String name = item.findElement(By.className("name")).getText();
-            String integer = item.findElement(By.className("whole-number")).getText();
-            String cents = item.findElement(By.className("decimal")).getText();
-            double price = Double.parseDouble(integer + "." + cents);
+            for (WebElement item : items) {
 
-            products.add(new PrismaProduct("Prisma", name, price, false, imgURL));
+                WebElement img = item.findElement(By.className("js-image-wrapper"));
+                String imgURL = img.findElement(By.tagName("img")).getAttribute("src");
+                String name = item.findElement(By.className("name")).getText();
+                String integer = item.findElement(By.className("whole-number")).getText();
+                String cents = item.findElement(By.className("decimal")).getText();
+                double price = Double.parseDouble(integer + "." + cents);
+
+                products.add(new PrismaProduct("Prisma", name, price, false, imgURL));
+            }
         }
 
         driver.quit();
