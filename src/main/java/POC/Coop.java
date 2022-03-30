@@ -23,6 +23,7 @@ public class Coop implements Store {
 
     public static List<Product> searchProducts(String keyword) {
         // Returns a list of products given keyword
+        // Only checks the first 3 pages of for keyword
 
         WebDriver driver = initializeDriver();
         String url = "https://ecoop.ee/et/otsing?query=" + keyword;
