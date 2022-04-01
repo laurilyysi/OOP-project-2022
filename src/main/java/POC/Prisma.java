@@ -40,7 +40,6 @@ public class Prisma implements Store {
                 String imgURL = img.findElement(By.tagName("img")).getAttribute("src");
                 String name = item.findElement(By.className("name")).getText();
 
-                // TODO: 3/30/2022 Fix: finding out if product is on sale
                 try {
                     preSalePriceString = (item.findElement(By.className("discount-price")).getText());
                     onSale = true;
