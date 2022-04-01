@@ -2,11 +2,11 @@ package POC;
 
 public class CoopProduct implements Product {
 
-    private String store;
-    private String name;
-    private double price;
+    private final String store;
+    private final String name;
+    private final double price;
     private int sale;
-    private String imgURL;
+    private final String imgURL;
 
     CoopProduct(String store, String name, double price, int sale, String imgURL) {
         this.store = store;

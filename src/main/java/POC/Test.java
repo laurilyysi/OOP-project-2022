@@ -1,7 +1,7 @@
+// TODO: 4/1/2022 Perhaps change language on either websites to english or
+//  when making user interface, make it in estonian, as to avoid merging languages.
 package POC;
-
 import java.util.List;
-
 public class Test {
     public static void main(String[] args){
 

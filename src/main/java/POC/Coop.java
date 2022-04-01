@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Coop implements Store {
 
@@ -26,6 +27,9 @@ public class Coop implements Store {
         String url = "https://ecoop.ee/et/otsing?query=" + keyword;
         driver.get(url);
 
+        //todo find out if this way is faster/doable and implement if so
+        // driver.manage().timeouts().implicitlyWait(1, TimeUnit.MILLISECONDS);
+
         List<Product> allProducts = new ArrayList<>();
         List<Product> pageProducts;
 
@@ -36,7 +40,7 @@ public class Coop implements Store {
             acceptCookies.click();
         } catch (Exception ignore){}//there is no button to accept cookies, sometimes ecoop is like that.
 
-        int i = 0;
+        int page = 1;
 
         do {
 
@@ -50,10 +54,10 @@ public class Coop implements Store {
                 pageProducts = scrapeBox(driver);
                 allProducts.addAll(pageProducts);
             }finally {
-                i++;
+                page++;
             }
 
-        } while (nextPage(driver) && i < 3);
+        } while (nextPage(driver) && page < 4);
 
         driver.quit();
 

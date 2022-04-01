@@ -2,17 +2,19 @@ package POC;
 
 public class PrismaProduct implements Product {
 
-    private String store;
-    private String name;
-    private double price;
-    private boolean onSale;
-    private String imgURL;
+    private final String store;
+    private final String name;
+    private final double price;
+    private final boolean onSale;
+    private final double preSalePrice;
+    private final String imgURL;
 
-    PrismaProduct(String store, String name, double price, boolean onSale, String imgURL) {
+    PrismaProduct(String store, String name, double price, boolean onSale, double preSalePrice, String imgURL) {
         this.store = store;
         this.name = name;
         this.price = price;
         this.onSale = onSale;
+        this.preSalePrice = preSalePrice;
         this.imgURL = imgURL;
     }
 
@@ -26,7 +28,10 @@ public class PrismaProduct implements Product {
 
     @Override
     public String toString() {
-        return price + " €\t" + name;
+        if (onSale) {
+            return "SALE " + price + " €\t" + name + ", presale price was " + preSalePrice;
+        }
+        return "     " + price + " €\t" + name;
     }
 
 }

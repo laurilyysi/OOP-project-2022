@@ -1,16 +1,14 @@
 package POC;
-
-import com.fasterxml.jackson.databind.annotation.NoClass;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static java.lang.Double.parseDouble;
 
 public class Prisma implements Store {
     // TODO: 3/30/2022 Suggestion to make products that can be found by
@@ -27,7 +25,7 @@ public class Prisma implements Store {
         String url = "https://www.prismamarket.ee/products/search/" + keyword;
         driver.get(url);
 
-        driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(1, TimeUnit.MILLISECONDS);
 
         List<WebElement> shelfs = driver.findElements(By.className("js-products-shelf"));//Products are split into different categories in prismamarket.ee
 
@@ -35,25 +33,30 @@ public class Prisma implements Store {
             List<WebElement> items = shelf.findElements(By.className("js-shelf-item"));
 
             for (WebElement item : items) {
+                boolean onSale = false;
+                String preSalePriceString = "0";
 
                 WebElement img = item.findElement(By.className("js-image-wrapper"));
                 String imgURL = img.findElement(By.tagName("img")).getAttribute("src");
                 String name = item.findElement(By.className("name")).getText();
 
                 // TODO: 3/30/2022 Fix: finding out if product is on sale
-                /*String preSalePrice = "";
                 try {
-                    preSalePrice = item.findElement(By.className("discount-price")).getText();
-                    System.out.println(preSalePrice);
-                }catch (NoSuchElementException e) {
-                    throw e;
-                }*/
+                    preSalePriceString = (item.findElement(By.className("discount-price")).getText());
+                    onSale = true;
+                }catch (Exception ignore) {}
 
                 String integer = item.findElement(By.className("whole-number")).getText();
                 String cents = item.findElement(By.className("decimal")).getText();
-                double price = Double.parseDouble(integer + "." + cents);
+                double price = parseDouble(integer + "." + cents);
+                double preSalePrice = parseDouble(preSalePriceString.replace(",", ".").replace(" €", ""));
 
-                products.add(new PrismaProduct("Prisma", name, price, false, imgURL));
+                if (onSale) {
+                    products.add(new PrismaProduct("Prisma", name, price, onSale, preSalePrice, imgURL));
+                }
+                else {
+                    products.add(new PrismaProduct("Prisma", name, price, onSale, price, imgURL));
+                }
             }
         }
 
