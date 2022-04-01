@@ -4,9 +4,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static java.lang.Double.parseDouble;
 
@@ -17,7 +18,7 @@ public class Prisma implements Store {
     //  This method would remove all unrelated products on these searches
     public static List<Product> searchProducts(String keyword) {
         //Returns a list of products from prismamarket.ee with given keyword
-        List<Product> products = new ArrayList<Product>();
+        List<Product> products = new ArrayList<>();
 
         WebDriverManager.chromedriver().setup();
         WebDriver driver = new ChromeDriver();
@@ -25,11 +26,11 @@ public class Prisma implements Store {
         String url = "https://www.prismamarket.ee/products/search/" + keyword;
         driver.get(url);
 
-        driver.manage().timeouts().implicitlyWait(1, TimeUnit.MILLISECONDS);
+        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1));
 
-        List<WebElement> shelfs = driver.findElements(By.className("js-products-shelf"));//Products are split into different categories in prismamarket.ee
+        List<WebElement> shelves = driver.findElements(By.className("js-products-shelf"));//Products are split into different categories in prismamarket.ee
 
-        for (WebElement shelf : shelfs) {
+        for (WebElement shelf : shelves) {
             List<WebElement> items = shelf.findElements(By.className("js-shelf-item"));
 
             for (WebElement item : items) {
@@ -41,9 +42,10 @@ public class Prisma implements Store {
                 String name = item.findElement(By.className("name")).getText();
 
                 try {
-                    preSalePriceString = (item.findElement(By.className("discount-price")).getText());
+                    preSalePriceString = item.findElement(By.className("discount-price")).getText();
                     onSale = true;
-                }catch (Exception ignore) {}
+                }catch (Exception ignore) {
+                }
 
                 String integer = item.findElement(By.className("whole-number")).getText();
                 String cents = item.findElement(By.className("decimal")).getText();
