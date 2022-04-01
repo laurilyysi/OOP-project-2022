@@ -1,10 +1,7 @@
 package POC;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.By;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -22,7 +19,7 @@ public class Coop implements Store {
     }
 
     public static List<Product> searchProducts(String keyword) {
-        // Returns a list of products given keyword
+        // Returns a list of products that have the given keyword
         // Only checks the first 3 pages of for keyword
 
         WebDriver driver = initializeDriver();
@@ -31,6 +28,13 @@ public class Coop implements Store {
 
         List<Product> allProducts = new ArrayList<>();
         List<Product> pageProducts;
+
+        //Accepts cookies, so it would be easier to navigate on website
+        try {
+            WebElement element = new WebDriverWait(driver, 1).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/app-root/div/div/app-main-footer/footer/div[3]/button")));
+            WebElement acceptCookies = driver.findElement(By.xpath("/html/body/app-root/div/div/app-main-footer/footer/div[3]/button"));
+            acceptCookies.click();
+        } catch (Exception ignore){}//there is no button to accept cookies, sometimes ecoop is like that.
 
         int i = 0;
 
@@ -109,9 +113,9 @@ public class Coop implements Store {
 
     public static void waitForBox(WebDriver driver) {
         // Waits for the "products-outer-wrapper" container to load before scraping
-
         WebDriverWait wait = new WebDriverWait(driver, 1);
         WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("products-outer-wrapper")));
+
     }
 
 
