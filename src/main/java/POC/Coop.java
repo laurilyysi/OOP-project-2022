@@ -3,15 +3,18 @@ package POC;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class Coop implements Store {
+
+    // change this variable manually to see info during runtime
+    // true - program outputs status info into the console
+    // false - no system output (preferred when not testing)
+    private static final boolean debug = true;
 
     public static WebDriver initializeDriver() {
         // Creates a WebDriver object for further actions
@@ -38,22 +41,25 @@ public class Coop implements Store {
             WebElement element = new WebDriverWait(driver, 1).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/app-root/div/div/app-main-footer/footer/div[3]/button")));
             WebElement acceptCookies = driver.findElement(By.xpath("/html/body/app-root/div/div/app-main-footer/footer/div[3]/button"));
             acceptCookies.click();
-        } catch (Exception ignore){}//there is no button to accept cookies, sometimes ecoop is like that.
+            if (debug) System.out.println("[Coop] Cookies accepted");
+        } catch (Exception ignore) {
+            if (debug) System.out.println("[Coop] No cookie popup, ignored");
+        }//there is no button to accept cookies, sometimes ecoop is like that.
 
         int page = 1;
 
         do {
-
             try {
+                if (debug) System.out.println("[Coop] Page (" + page + "/3)");
                 waitForBox(driver);
                 pageProducts = scrapeBox(driver);
                 allProducts.addAll(pageProducts);
-            } catch (StaleElementReferenceException e) {
-                System.out.println("EXCEPTION");
+            } catch (Exception e) {
+                if (debug) System.out.println("[Coop] Exception: " + e.getClass().getSimpleName());
                 waitForBox(driver);
                 pageProducts = scrapeBox(driver);
                 allProducts.addAll(pageProducts);
-            }finally {
+            } finally {
                 page++;
             }
 
@@ -82,18 +88,26 @@ public class Coop implements Store {
             String cents = item.findElement(By.className("decimal")).getText().split(" ")[0];
             double price = Double.parseDouble(integer + "." + cents);
 
-            // Determining if product is on sale,
-            //   sale = 0 -> product is not on sale (white background, no discount)
-            //   sale = 1 -> product is on sale (yellow background, regular discount)
-            //   sale = 2 -> product is on sale with Säästukaart (blue background, discount with card)
-
-            int sale = -1;
+            // Determining if product is on sale
+            boolean sale = false;
             String priceTag = item.findElement(By.tagName("app-price-tag")).getAttribute("class");
-            if (priceTag.equals("regular")) sale = 0;
-            else if (priceTag.equals("discount")) sale = 1;
-            else if (priceTag.equals("discount-card")) sale = 2;
 
-            products.add(new CoopProduct("Coop", name, price, sale, imgURL));
+            // If discount is via Säästukaart, creates a new DiscountProduct and saves regular price
+            if (priceTag.equals("discount-card") || priceTag.equals("discount")) {
+                sale = true;
+                WebElement pricesInfo = item.findElement(By.className("prices-info"));
+                double regularPrice = Double.parseDouble(pricesInfo.getText().split(" ")[0]);
+
+                if (priceTag.equals("discount-card"))
+                    products.add(new CoopDiscountBlue("Coop", name, price, sale, imgURL, regularPrice));
+                if (priceTag.equals("discount")) {
+                    products.add(new CoopDiscountYellow("Coop", name, price, sale, imgURL, regularPrice));
+                }
+            }
+            // If discount is regular
+            else {
+                products.add(new CoopProduct("Coop", name, price, sale, imgURL));
+            }
 
         }
         return products;
@@ -103,7 +117,7 @@ public class Coop implements Store {
         // goes to next page and returns true if next page exists, else returns false
         WebElement nextButton = driver.findElement(By.xpath(
                 "//*[@id=\"body\"]/app-root/div/div/ais-instantsearch/" +
-                        "div/app-search/div/ais-hits/div/app-pagination/button[2]"));
+                "div/app-search/div/ais-hits/div/app-pagination/button[2]"));
 
         if (nextButton.isEnabled()) {
             nextButton.click();
@@ -119,7 +133,6 @@ public class Coop implements Store {
         // Waits for the "products-outer-wrapper" container to load before scraping
         WebDriverWait wait = new WebDriverWait(driver, 1);
         WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("products-outer-wrapper")));
-
     }
 
 

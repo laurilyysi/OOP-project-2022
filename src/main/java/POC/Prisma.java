@@ -16,6 +16,12 @@ public class Prisma implements Store {
     //  this method, be searched by the links in prismamarket.ee that can
     //  be accessed in the searchbar on the left side of the website. Products like these are "makaron", "riis", "Krõpsud" and others.
     //  This method would remove all unrelated products on these searches
+
+    // change this variable manually to see info during runtime
+    // true - program outputs status info into the console
+    // false - no system output (preferred when not testing)
+    private static final boolean debug = true;
+
     public static List<Product> searchProducts(String keyword) {
         //Returns a list of products from prismamarket.ee with given keyword
         List<Product> products = new ArrayList<>();
@@ -29,9 +35,14 @@ public class Prisma implements Store {
         driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1));
 
         List<WebElement> shelves = driver.findElements(By.className("js-products-shelf"));//Products are split into different categories in prismamarket.ee
+        int shelfCount = shelves.size();
+        int scrapedShelfCount = 1;
 
         for (WebElement shelf : shelves) {
             List<WebElement> items = shelf.findElements(By.className("js-shelf-item"));
+
+            if (debug) System.out.println("[Prisma] Shelf (" + scrapedShelfCount + "/" + shelfCount + ")");
+            scrapedShelfCount++;
 
             for (WebElement item : items) {
                 boolean onSale = false;
@@ -44,8 +55,7 @@ public class Prisma implements Store {
                 try {
                     preSalePriceString = item.findElement(By.className("discount-price")).getText();
                     onSale = true;
-                }catch (Exception ignore) {
-                }
+                } catch (Exception ignore) {}
 
                 String integer = item.findElement(By.className("whole-number")).getText();
                 String cents = item.findElement(By.className("decimal")).getText();
