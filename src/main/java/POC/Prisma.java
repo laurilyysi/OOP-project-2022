@@ -63,11 +63,9 @@ public class Prisma implements Store {
                 double preSalePrice = parseDouble(preSalePriceString.replace(",", ".").replace(" €", ""));
 
                 if (onSale) {
-                    products.add(new PrismaProduct("Prisma", name, price, onSale, preSalePrice, imgURL));
+                    products.add(new PrismaDiscountYellow("Prisma", name, price, onSale, imgURL, preSalePrice));
                 }
-                else {
-                    products.add(new PrismaProduct("Prisma", name, price, onSale, price, imgURL));
-                }
+                else products.add(new PrismaProduct("Prisma", name, price, onSale, imgURL));
             }
         }
 

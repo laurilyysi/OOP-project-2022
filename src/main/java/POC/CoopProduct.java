@@ -26,7 +26,6 @@ public class CoopProduct implements Product {
 
     @Override
     public String toString() {
-        if (onSale) return "[Y] " + price + " €\t" + name;
         return "    " + price + " €\t" + name;
     }
 
