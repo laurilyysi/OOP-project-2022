@@ -13,7 +13,7 @@ public class PrismaDiscountYellow extends PrismaProduct {
 
     @Override
     public String toString() {
-        return "[Y] " + getPrice() + " €\t" + getName() + " [regular price: " + regularPrice + "]";
+        return "[Y] " + getPrice() + " €\t" + getName() + " [regular price: " + regularPrice + " €]";
     }
 
 }
