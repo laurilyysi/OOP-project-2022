@@ -1,4 +1,5 @@
 package POC;
+
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -46,26 +47,22 @@ public class Prisma implements Store {
 
             for (WebElement item : items) {
                 boolean onSale = false;
-                String preSalePriceString = "0";
 
                 WebElement img = item.findElement(By.className("js-image-wrapper"));
                 String imgURL = img.findElement(By.tagName("img")).getAttribute("src");
                 String name = item.findElement(By.className("name")).getText();
 
-                try {
-                    preSalePriceString = item.findElement(By.className("discount-price")).getText();
-                    onSale = true;
-                } catch (Exception ignore) {}
-
                 String integer = item.findElement(By.className("whole-number")).getText();
                 String cents = item.findElement(By.className("decimal")).getText();
                 double price = parseDouble(integer + "." + cents);
-                double preSalePrice = parseDouble(preSalePriceString.replace(",", ".").replace(" €", ""));
 
-                if (onSale) {
+                if (item.findElements(By.className("discount-price")).size() > 0) {
+                    onSale = true;
+                    String preSalePriceString = item.findElement(By.className("discount-price")).getText();
+                    double preSalePrice = parseDouble(preSalePriceString.replace(",", ".").replace(" €", ""));
                     products.add(new PrismaDiscountYellow("Prisma", name, price, onSale, imgURL, preSalePrice));
-                }
-                else products.add(new PrismaProduct("Prisma", name, price, onSale, imgURL));
+                } else products.add(new PrismaProduct("Prisma", name, price, onSale, imgURL));
+
             }
         }
 
