@@ -26,12 +26,14 @@ public class Selver {
         driver.get(url);
 
         int pageCount = 1;
+        String xpath = "/html/body/div[1]/div/div[1]/div[4]/main/div/div[2]";
 
         try {
             do {
 
                 if (debug) System.out.println("[Selver] Page (" + pageCount + "/3)");
-                while (!waitForBox(driver)) waitForBox(driver);
+
+                while (!waitFor(driver, xpath)) waitFor(driver, xpath);
 
                 WebElement productsView = driver.findElement(By.className("products-view"));
                 List<WebElement> items = productsView.findElements(By.className("ProductCard"));
@@ -56,8 +58,8 @@ public class Selver {
                 }
                 pageCount++;
             } while (nextPage(driver) && pageCount < 4);
-        } catch (StaleElementReferenceException e) {
-            System.out.println("[Selver] StaleElementReferenceException");
+        } catch (Exception e) {
+            System.out.println("[Selver] " + e.getClass().getSimpleName());
         }
 
         driver.quit();
@@ -80,14 +82,14 @@ public class Selver {
         return false;
     }
 
-    public static boolean waitForBox(WebDriver driver) {
+    public static boolean waitFor(WebDriver driver, String xpath) {
         try {
             WebElement element = new WebDriverWait(driver, 1)
-                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div/div[1]/div[4]/main/div/div[2]")));
-            if (debug) System.out.println("[Selver] Box loaded");
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
+            if (debug) System.out.println("[Selver] Loaded");
             return true;
         } catch (TimeoutException e) {
-            if (debug) System.out.println("[Selver] Box didn't load, retry..");
+            if (debug) System.out.println("[Selver] Didn't load, retry..");
             return false;
         }
     }
