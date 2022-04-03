@@ -1,4 +1,5 @@
 package POC;
+
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -44,7 +45,7 @@ public class Prisma implements Store {
                 try {
                     preSalePriceString = item.findElement(By.className("discount-price")).getText();
                     onSale = true;
-                }catch (Exception ignore) {
+                } catch (Exception ignore) {
                 }
 
                 String integer = item.findElement(By.className("whole-number")).getText();
@@ -54,8 +55,7 @@ public class Prisma implements Store {
 
                 if (onSale) {
                     products.add(new PrismaProduct("Prisma", name, price, onSale, preSalePrice, imgURL));
-                }
-                else {
+                } else {
                     products.add(new PrismaProduct("Prisma", name, price, onSale, price, imgURL));
                 }
             }
