@@ -1,6 +1,6 @@
 package POC;
 
-public class CoopProduct implements Product {
+public class RimiProduct implements Product {
 
     private final String store;
     private final String name;
@@ -8,7 +8,7 @@ public class CoopProduct implements Product {
     private boolean onSale;
     private final String imgURL;
 
-    CoopProduct(String store, String name, double price, boolean onSale, String imgURL) {
+    public RimiProduct(String store, String name, double price, boolean onSale, String imgURL) {
         this.store = store;
         this.name = name;
         this.price = price;
@@ -16,6 +16,7 @@ public class CoopProduct implements Product {
         this.imgURL = imgURL;
     }
 
+    @Override
     public double getPrice() {
         return price;
     }

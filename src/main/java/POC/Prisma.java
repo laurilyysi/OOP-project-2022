@@ -17,6 +17,12 @@ public class Prisma implements Store {
     //  this method, be searched by the links in prismamarket.ee that can
     //  be accessed in the searchbar on the left side of the website. Products like these are "makaron", "riis", "Krõpsud" and others.
     //  This method would remove all unrelated products on these searches
+
+    // change this variable manually to see info during runtime
+    // true - program outputs status info into the console
+    // false - no system output (preferred when not testing)
+    private static final boolean debug = true;
+
     public static List<Product> searchProducts(String keyword) {
         //Returns a list of products from prismamarket.ee with given keyword
         List<Product> products = new ArrayList<>();
@@ -30,34 +36,33 @@ public class Prisma implements Store {
         driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1));
 
         List<WebElement> shelves = driver.findElements(By.className("js-products-shelf"));//Products are split into different categories in prismamarket.ee
+        int shelfCount = shelves.size();
+        int scrapedShelfCount = 1;
 
         for (WebElement shelf : shelves) {
             List<WebElement> items = shelf.findElements(By.className("js-shelf-item"));
 
+            if (debug) System.out.println("[Prisma] Shelf (" + scrapedShelfCount + "/" + shelfCount + ")");
+            scrapedShelfCount++;
+
             for (WebElement item : items) {
                 boolean onSale = false;
-                String preSalePriceString = "0";
 
                 WebElement img = item.findElement(By.className("js-image-wrapper"));
                 String imgURL = img.findElement(By.tagName("img")).getAttribute("src");
                 String name = item.findElement(By.className("name")).getText();
 
-                try {
-                    preSalePriceString = item.findElement(By.className("discount-price")).getText();
-                    onSale = true;
-                } catch (Exception ignore) {
-                }
-
                 String integer = item.findElement(By.className("whole-number")).getText();
                 String cents = item.findElement(By.className("decimal")).getText();
                 double price = parseDouble(integer + "." + cents);
-                double preSalePrice = parseDouble(preSalePriceString.replace(",", ".").replace(" €", ""));
 
-                if (onSale) {
-                    products.add(new PrismaProduct("Prisma", name, price, onSale, preSalePrice, imgURL));
-                } else {
-                    products.add(new PrismaProduct("Prisma", name, price, onSale, price, imgURL));
-                }
+                if (item.findElements(By.className("discount-price")).size() > 0) {
+                    onSale = true;
+                    String preSalePriceString = item.findElement(By.className("discount-price")).getText();
+                    double preSalePrice = parseDouble(preSalePriceString.replace(",", ".").replace(" €", ""));
+                    products.add(new PrismaDiscountYellow("Prisma", name, price, onSale, imgURL, preSalePrice));
+                } else products.add(new PrismaProduct("Prisma", name, price, onSale, imgURL));
+
             }
         }
 

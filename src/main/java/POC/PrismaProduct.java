@@ -6,20 +6,21 @@ public class PrismaProduct implements Product {
     private final String name;
     private final double price;
     private final boolean onSale;
-    private final double preSalePrice;
     private final String imgURL;
 
-    PrismaProduct(String store, String name, double price, boolean onSale, double preSalePrice, String imgURL) {
+    PrismaProduct(String store, String name, double price, boolean onSale, String imgURL) {
         this.store = store;
         this.name = name;
         this.price = price;
         this.onSale = onSale;
-        this.preSalePrice = preSalePrice;
         this.imgURL = imgURL;
     }
 
     public double getPrice() {
         return price;
+    }
+    public String getName() {
+        return name;
     }
 
     public boolean isOnSale() {
@@ -28,10 +29,7 @@ public class PrismaProduct implements Product {
 
     @Override
     public String toString() {
-        if (onSale) {
-            return "SALE " + price + " €\t" + name + ", presale price was " + preSalePrice;
-        }
-        return "     " + price + " €\t" + name;
+        return "    " + price + " €\t" + name;
     }
 
 }
