@@ -41,11 +41,11 @@ public class Maxima implements Store {
                         String[] prices = info[1].replaceAll("€", "").split(" ");
                         double oldPrice = Double.parseDouble(prices[0]);
                         double salePrice = Double.parseDouble(prices[1]);
-                        allProducts.add(new MaximaDiscount("Maxima", name, salePrice, true, imgURL, oldPrice));
+                        allProducts.add(new Product("Maxima", name, salePrice, DiscountType.campaign, imgURL, oldPrice));
                     }
                     else {
                         double price = Double.parseDouble(info[1].replace("€", ""));
-                        allProducts.add(new MaximaProduct("Maxima", name, price, false, imgURL));
+                        allProducts.add(new Product("Maxima", name, price, DiscountType.noDiscount, imgURL, price));
                     }
                 }
                 else {
