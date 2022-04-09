@@ -30,9 +30,6 @@ public class Coop implements Store {
         String url = "https://ecoop.ee/et/otsing?query=" + keyword;
         driver.get(url);
 
-        //todo find out if this way is faster/doable and implement if so
-        // driver.manage().timeouts().implicitlyWait(1, TimeUnit.MILLISECONDS);
-
         List<Product> allProducts = new ArrayList<>();
         List<Product> pageProducts;
 
@@ -89,24 +86,22 @@ public class Coop implements Store {
             double price = Double.parseDouble(integer + "." + cents);
 
             // Determining if product is on sale
-            boolean sale = false;
             String priceTag = item.findElement(By.tagName("app-price-tag")).getAttribute("class");
 
             // If discount is via Säästukaart, creates a new DiscountProduct and saves regular price
             if (priceTag.equals("discount-card") || priceTag.equals("discount")) {
-                sale = true;
                 WebElement pricesInfo = item.findElement(By.className("prices-info"));
                 double regularPrice = Double.parseDouble(pricesInfo.getText().split(" ")[0]);
 
                 if (priceTag.equals("discount-card"))
-                    products.add(new CoopDiscountBlue("Coop", name, price, sale, imgURL, regularPrice));
+                    products.add(new Product("Coop", name, price, DiscountType.discountCard, imgURL, regularPrice));
                 if (priceTag.equals("discount")) {
-                    products.add(new CoopDiscountYellow("Coop", name, price, sale, imgURL, regularPrice));
+                    products.add(new Product("Coop", name, price, DiscountType.campaign, imgURL, regularPrice));
                 }
             }
             // If discount is regular
             else {
-                products.add(new CoopProduct("Coop", name, price, sale, imgURL));
+                products.add(new Product("Coop", name, price, DiscountType.noDiscount, imgURL, price));
             }
 
         }

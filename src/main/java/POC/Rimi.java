@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Rimi implements Store {
-
     // change this variable manually to see info during runtime
     // true - program outputs status info into the console
     // false - no system output (preferred when not testing)
@@ -55,30 +54,25 @@ public class Rimi implements Store {
                 String decimal = priceInfo.findElement(By.tagName("sup")).getText();
                 price = Double.parseDouble(integer + "." + decimal);
             } else if (debug) System.out.println("[Rimi] Product marked unavailable: " + name);
-
-            boolean onSale = false;
-
             // Makes product objects based on discount
             if (item.findElements(By.className("-has-discount")).size() > 0) {
-                onSale = true;
                 if (priceInfo.findElements(By.className("old-price-tag")).size() > 0) {
                     // Sometimes the old price is not displayed
                     WebElement oldPriceTag = priceInfo.findElement(By.className("old-price-tag"));
                     double oldPrice = Double.parseDouble(oldPriceTag.getText().replace(",", ".").replace("€", ""));
-                    allProducts.add(new RimiDiscountRed("Rimi", name, price, onSale, imgURL, oldPrice));
-                } else allProducts.add(new RimiDiscountRed("Rimi", name, price, onSale, imgURL, price));
+                    allProducts.add(new Product("Rimi", name, price, DiscountType.campaign, imgURL, oldPrice));
+                } else allProducts.add(new Product("Rimi", name, price, DiscountType.campaign, imgURL, price));
             }
 
             else if (item.findElements(By.className("price-badge")).size() > 0) {
-                onSale = true;
                 WebElement priceBadge = item.findElement(By.className("price-badge__price"));
                 List<WebElement> saleInfo = priceBadge.findElements(By.tagName("span"));
                 double salePrice = Double.parseDouble(saleInfo.get(0).getText() + "." + saleInfo.get(1).getText());
-                allProducts.add(new RimiDiscountBadge("Rimi", name, salePrice, onSale, imgURL, price));
+                allProducts.add(new Product("Rimi", name, salePrice, DiscountType.discountCard, imgURL, price));
             }
 
             else if (price != -1) {
-                allProducts.add(new RimiProduct("Rimi", name, price, onSale, imgURL));
+                allProducts.add(new Product("Rimi", name, price, DiscountType.noDiscount, imgURL, price));
             }
         }
 

@@ -6,6 +6,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,10 +51,10 @@ public class Selver {
 
                         if (!badge.getText().equals("")) {
                             double salePrice = Double.parseDouble(badge.getText().replace(",", ".").replace(" €", ""));
-                            allProducts.add(new SelverDiscountBadge("Selver", name, salePrice, true, imgURL, price));
+                            allProducts.add(new Product("Selver", name, salePrice, DiscountType.discountCard, imgURL, price));
                         }
                     } else {
-                        allProducts.add(new SelverProduct("Selver", name, price, false, imgURL));
+                        allProducts.add(new Product("Selver", name, price, DiscountType.noDiscount, imgURL, price));
                     }
                 }
                 pageCount++;
@@ -84,7 +85,7 @@ public class Selver {
 
     public static boolean waitFor(WebDriver driver, String xpath) {
         try {
-            WebElement element = new WebDriverWait(driver, 1)
+            WebElement element = new WebDriverWait(driver, Duration.ofMillis(1))
                     .until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
             if (debug) System.out.println("[Selver] Loaded");
             return true;
