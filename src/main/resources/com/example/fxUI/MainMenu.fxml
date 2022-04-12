@@ -6,53 +6,53 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="656.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.fxUI.MainMenu">
+<AnchorPane prefHeight="550.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.fxUI.MainMenuController">
    <children>
-      <Text layoutX="157.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tere tulemast, kasutaja!" textAlignment="CENTER">
+      <Text fx:id="textWelcomeUser" layoutX="144.0" layoutY="74.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tere tulemast!">
          <font>
             <Font size="28.0" />
          </font>
       </Text>
-      <Text layoutX="237.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mida soovid teha?">
+      <Text layoutX="166.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mida soovid teha?">
          <font>
             <Font size="16.0" />
          </font>
       </Text>
-      <Button fx:id="buttonOstle" layoutX="120.0" layoutY="216.0" mnemonicParsing="false" onAction="#ostle" prefHeight="51.0" prefWidth="360.0" text="Mine ostlema">
+      <Button fx:id="buttonOstunimekiri" layoutX="98.0" layoutY="152.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="266.0" text="Muuda ostunimekirja">
          <font>
-            <Font size="24.0" />
+            <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="buttonTee" layoutX="121.0" layoutY="280.0" mnemonicParsing="false" onAction="#arvutaTee" prefHeight="51.0" prefWidth="360.0" text="Arvuta tee">
+      <Button fx:id="buttonMineOstlema" layoutX="98.0" layoutY="201.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="266.0" text="Mine ostlema">
          <font>
-            <Font size="24.0" />
+            <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="buttonAjalugu" layoutX="120.0" layoutY="437.0" mnemonicParsing="false" onAction="#ostuAjalugu" prefHeight="51.0" prefWidth="360.0" text="Kuva ostuajalugu">
+      <Button fx:id="buttonArvutaTee" layoutX="98.0" layoutY="250.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="266.0" text="Arvuta tee">
          <font>
-            <Font size="24.0" />
+            <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="buttonOstunimekiri" layoutX="119.0" layoutY="155.0" mnemonicParsing="false" onAction="#ostunimekiri" prefHeight="51.0" prefWidth="360.0" text="Muuda ostunimekirja">
+      <Button fx:id="buttonKuvaProfiil" layoutX="98.0" layoutY="312.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="266.0" text="Kuva profiil">
          <font>
-            <Font size="24.0" />
+            <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="buttonSobrad" layoutX="122.0" layoutY="503.0" mnemonicParsing="false" onAction="#sobrad" prefHeight="51.0" prefWidth="360.0" text="Halda sõpru">
+      <Line endX="236.0" layoutX="129.0" layoutY="300.0" startX="-30.0" />
+      <Button fx:id="buttonOstuajalugu" layoutX="98.0" layoutY="361.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="266.0" text="Kuva ostuajalugu">
          <font>
-            <Font size="24.0" />
+            <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="buttonValju" layoutX="122.0" layoutY="570.0" mnemonicParsing="false" onAction="#logiValja" prefHeight="51.0" prefWidth="360.0" text="Logi välja">
+      <Button fx:id="buttonHaldaSopru" layoutX="98.0" layoutY="410.0" mnemonicParsing="false" onAction="#clickButtonHaldaSopru" prefHeight="39.0" prefWidth="266.0" text="Halda sõpru">
          <font>
-            <Font size="24.0" />
+            <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="buttonProfiil" layoutX="122.0" layoutY="373.0" mnemonicParsing="false" onAction="#profiil" prefHeight="51.0" prefWidth="360.0" text="Kuva profiil">
+      <Button fx:id="buttonLogiValja" layoutX="98.0" layoutY="459.0" mnemonicParsing="false" onAction="#clickButtonLogiValja" prefHeight="39.0" prefWidth="266.0" text="Logi välja">
          <font>
-            <Font size="24.0" />
+            <Font size="18.0" />
          </font>
       </Button>
-      <Line endX="325.0" layoutX="152.0" layoutY="351.0" startX="-30.0" />
    </children>
 </AnchorPane>
