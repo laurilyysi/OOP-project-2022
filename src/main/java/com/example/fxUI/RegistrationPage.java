@@ -108,7 +108,7 @@ public class RegistrationPage extends Application {
         boolean emailOK = false;
 
         String nimi = kasutajanimi.getText();
-        if (nimi.length() >= 3 && nimi.matches("[A-Za-z0-9]*") && !userIDwithPassword.containsKey(nimi)) {
+        if (nimi.length() >= 3 && nimi.length() <= 18 && nimi.matches("[A-Za-z0-9]*") && !userIDwithPassword.containsKey(nimi)) {
             kasutajaText.setUnderline(false);
             nimiOK = true;
         } else {
@@ -182,12 +182,29 @@ public class RegistrationPage extends Application {
             // user input is faulty, needs to recheck
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Vigased kasutaja andmed");
-            alert.setHeaderText("Sisestatud andmed on vigased, vaata üle allajoonitud väljad! \nKasutajanime ja parooli miinimumpikkus on 3 märki!");
+            alert.setHeaderText("Sisestatud andmed on vigased, vaata üle allajoonitud väljad!");
+
+            StringBuilder vead = new StringBuilder("");
 
             if (userIDwithPassword.containsKey(nimi))
-                alert.setContentText("Valitud kasutajanimi on juba hõivatud, valige uus");
+                vead.append("• Valitud kasutajanimi on juba hõivatud, valige uus\n");
 
+            if (!nimiOK)
+                vead.append("• Kasutajanime ja parooli pikkus jäägu vahemikku 3-18 märki\n");
+
+            if (!paroolOK)
+                if (salasona.contains(":")) vead.append("• Parool ei tohi sisaldada sümbolit ':'\n");
+
+            if (!vanusOK)
+                vead.append("• Vanus peab olema positiivne täisarv\n");
+
+            if (!emailOK)
+                vead.append("• Vigane email\n");
+
+            if (debug) System.out.println("[RegistrationPage]\n" + vead);
+            alert.setContentText(String.valueOf(vead));
             alert.showAndWait();
+
         }
     }
 

@@ -13,7 +13,7 @@
          </font>
       </Text>
       <Text fx:id="kasutajaText" layoutX="116.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kasutajanimi" />
-      <TextField fx:id="kasutajanimi" layoutX="245.0" layoutY="123.0" prefHeight="25.0" prefWidth="240.0" promptText="Lubatud ladina tähed ja numbrid" />
+      <TextField fx:id="kasutajanimi" layoutX="245.0" layoutY="123.0" prefHeight="25.0" prefWidth="240.0" promptText="Kasuta numbreid ja ladina tähti" />
       <Text fx:id="paroolText" layoutX="117.0" layoutY="171.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Salasõna" />
       <PasswordField fx:id="parool" layoutX="245.0" layoutY="154.0" prefHeight="25.0" prefWidth="240.0" promptText="Ei tohi sisaldada sümbolit &quot;:&quot;" />
       <Text fx:id="vanusText" layoutX="117.0" layoutY="202.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vanus" />

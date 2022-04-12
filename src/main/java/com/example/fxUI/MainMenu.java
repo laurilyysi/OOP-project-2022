@@ -66,10 +66,6 @@ public class MainMenu extends Application {
         if (debug) System.out.println("[MainMenu] Button pressed {Halda sõpru}");
     }
 
-    public void blokeeri(ActionEvent e) {
-        if (debug) System.out.println("[MainMenu] Button pressed {Blokeeri kasutaja}");
-    }
-
     public void logiValja(ActionEvent e) {
         if (debug) System.out.println("[MainMenu] Button pressed {Logi välja}");
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
