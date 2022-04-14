@@ -16,6 +16,8 @@ public class User {
 
     private ArrayList<String> shoppinglist;
 
+    private String listFileName;
+
     public User(String username, String password, int age, String email, String location, boolean saastukaart, boolean partnerkaart, boolean rimikaart) {
         this.username = username;
         this.password = password;
@@ -25,11 +27,25 @@ public class User {
         this.saastukaart = saastukaart;
         this.partnerkaart = partnerkaart;
         this.rimikaart = rimikaart;
+
         this.shoppinglist = new ArrayList<>();
+        this.listFileName = username + "_list.txt";
     }
 
     public String getUsername() {
         return username;
     }
 
+    public String getListFileName() {
+        return listFileName;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", age=" + age +
+                '}';
+    }
 }

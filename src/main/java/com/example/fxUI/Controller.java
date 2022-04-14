@@ -39,7 +39,7 @@ public class Controller {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            if (debug) System.out.println("Exception {switchToMainMenu}: " + e.getClass().getSimpleName());
+            if (debug) System.out.println("Exception {switchTo}: " + e.getClass().getSimpleName());
         }
     }
 
@@ -67,8 +67,18 @@ public class Controller {
         return currentUser;
     }
 
-    public static String getCurrentUserName() {
-        return currentUser.getUsername();
+    // ---
+    public Stage getStage() {
+        return stage;
     }
+
+    public Scene getScene() {
+        return scene;
+    }
+
+    public Parent getRoot() {
+        return root;
+    }
+    // ---
 
 }
