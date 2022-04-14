@@ -1,10 +1,13 @@
 package com.example.fxUI;
 
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.FileInputStream;
@@ -28,33 +31,9 @@ public class Controller {
     private Scene scene;
     private Parent root;
 
-    public void switchToLoginPage(ActionEvent event) {
+    public void switchTo(ActionEvent event, String fxmlFile) {
         try {
-            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("LoginPage.fxml")));
-            stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            if (debug) System.out.println("Exception {switchToLoginPage}: " + e.getClass().getSimpleName());
-        }
-    }
-
-    public void switchToRegistrationPage(ActionEvent event) {
-        try {
-            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("RegistrationPage.fxml")));
-            stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            if (debug) System.out.println("Exception {switchToRegistrationPage}: " + e.getClass().getSimpleName());
-        }
-    }
-
-    public void switchToMainMenu(ActionEvent event) {
-        try {
-            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("MainMenu.fxml")));
+            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlFile)));
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             scene = new Scene(root);
             stage.setScene(scene);

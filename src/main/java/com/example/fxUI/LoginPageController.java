@@ -36,7 +36,6 @@ public class LoginPageController extends Controller {
 
             String userInfoFileName = username + "_info.txt";
             String userFilePath = "data\\userdata\\" + username + "\\" + userInfoFileName;
-
             String[] userInfo = String.valueOf(Files.readAllLines(Paths.get(userFilePath))).split(":");
 
             currentUser = new User(userInfo[0], userInfo[1], Integer.parseInt(userInfo[2]), userInfo[3], userInfo[4],
@@ -45,22 +44,36 @@ public class LoginPageController extends Controller {
                     Boolean.parseBoolean(userInfo[7]));
 
             Controller.setCurrentUser(currentUser);
-
-            switchToMainMenu(event);
-
-            Alert success = new Alert(Alert.AlertType.INFORMATION);
-            success.setTitle("Sisse logitud");
-            success.setHeaderText("Edukalt sisse logitud!");
-            success.showAndWait();
+            switchTo(event, "MainMenu.fxml");
+            displayLoginSuccess(event);
 
         } else {
-            System.out.println("Wrong credentials");
+            if (debug) System.out.println("[LoginPage] Wrong credentials");
+            displayLoginError();
         }
 
     }
 
+    public void clickButtonNoAccount(ActionEvent event) {
+        switchTo(event, "RegistrationPage.fxml");
+    }
+
     public boolean validLogin(String username, String password) {
         return userIDwithPassword.containsKey(username) && userIDwithPassword.get(username).equals(password);
+    }
+
+    public void displayLoginSuccess(ActionEvent event) {
+        Alert success = new Alert(Alert.AlertType.INFORMATION);
+        success.setTitle("Sisse logitud");
+        success.setHeaderText("Kasutaja " + enterUsername.getText() + " edukalt sisse logitud!");
+        success.showAndWait();
+    }
+
+    public void displayLoginError() {
+        Alert loginError = new Alert(Alert.AlertType.ERROR);
+        loginError.setTitle("Viga");
+        loginError.setHeaderText("Viga sisselogimisel, kontrolli üle kasutajanimi ja parool");
+        loginError.showAndWait();
     }
 
 }

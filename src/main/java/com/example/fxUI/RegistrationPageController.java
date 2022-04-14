@@ -56,8 +56,10 @@ public class RegistrationPageController extends Controller {
             userIDwithPassword = updateUserIDwithPassword();
             createNewUser();
             displaySuccessAlert();
-            switchToLoginPage(event);
+            switchTo(event, "LoginPage.fxml");
+            // switchToLoginPage(event);
         } else {
+            // displays error alert
             StringBuilder errors = new StringBuilder("");
 
             if (!usernameOK) errors.append("Vigane kasutajanimi\n");
@@ -72,6 +74,10 @@ public class RegistrationPageController extends Controller {
             failed.showAndWait();
         }
 
+    }
+
+    public void clickButtonMineTagasi(ActionEvent event) {
+        switchTo(event, "LoginPage.fxml");
     }
 
     public boolean validUsername(String username) {

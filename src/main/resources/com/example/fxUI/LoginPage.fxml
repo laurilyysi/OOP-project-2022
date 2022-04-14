@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.fxUI.LoginPage">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.fxUI.LoginPageController">
    <children>
-      <TextField fx:id="enteredUser" layoutX="221.0" layoutY="166.0" onAction="#logiSisse" prefHeight="25.0" prefWidth="260.0" />
-      <PasswordField fx:id="enteredPassword" layoutX="221.0" layoutY="200.0" prefHeight="25.0" prefWidth="260.0" />
-      <Button layoutX="119.0" layoutY="244.0" mnemonicParsing="false" onAction="#logiSisse" prefHeight="25.0" prefWidth="361.0" text="Logi sisse" />
-      <Button fx:id="registreeri" layoutX="119.0" layoutY="286.0" mnemonicParsing="false" onAction="#registreeri" prefHeight="25.0" prefWidth="361.0" text="Pole kontot? Registreeru" />
-      <Text layoutX="119.0" layoutY="183.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kasutajanimi" wrappingWidth="100.072265625" />
-      <Text layoutX="119.0" layoutY="217.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Salasõna" wrappingWidth="100.072265625" />
-      <Text layoutX="187.0" layoutY="103.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Odavaim ostukorv">
+      <Text layoutX="270.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="OO">
          <font>
             <Font size="28.0" />
          </font>
       </Text>
+      <Label layoutX="120.0" layoutY="167.0" text="Kasutajanimi" />
+      <TextField fx:id="enterUsername" layoutX="227.0" layoutY="163.0" prefHeight="25.0" prefWidth="254.0" />
+      <Label layoutX="120.0" layoutY="200.0" text="Salasõna" />
+      <PasswordField fx:id="enterPassword" layoutX="226.0" layoutY="196.0" prefHeight="25.0" prefWidth="254.0" />
+      <Button layoutX="120.0" layoutY="256.0" mnemonicParsing="false" onAction="#clickButtonLogiSisse" prefHeight="25.0" prefWidth="361.0" text="Logi sisse" />
+      <Button layoutX="120.0" layoutY="296.0" mnemonicParsing="false" onAction="#clickButtonNoAccount" prefHeight="25.0" prefWidth="361.0" text="Pole kontot? Registreeru" />
    </children>
-</Pane>
+</AnchorPane>

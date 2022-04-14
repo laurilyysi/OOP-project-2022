@@ -18,28 +18,28 @@
             <Font size="16.0" />
          </font>
       </Text>
-      <Button fx:id="buttonOstunimekiri" layoutX="98.0" layoutY="152.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="266.0" text="Muuda ostunimekirja">
+      <Button fx:id="buttonOstunimekiri" layoutX="98.0" layoutY="152.0" mnemonicParsing="false" onAction="#clickButtonOstunimekiri" prefHeight="39.0" prefWidth="266.0" text="Muuda ostunimekirja">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="buttonMineOstlema" layoutX="98.0" layoutY="201.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="266.0" text="Mine ostlema">
+      <Button fx:id="buttonMineOstlema" layoutX="98.0" layoutY="201.0" mnemonicParsing="false" onAction="#clickButtonMineOstlema" prefHeight="39.0" prefWidth="266.0" text="Mine ostlema">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="buttonArvutaTee" layoutX="98.0" layoutY="250.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="266.0" text="Arvuta tee">
+      <Button fx:id="buttonArvutaTee" layoutX="98.0" layoutY="250.0" mnemonicParsing="false" onAction="#clickButtonArvutaTee" prefHeight="39.0" prefWidth="266.0" text="Arvuta tee">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="buttonKuvaProfiil" layoutX="98.0" layoutY="312.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="266.0" text="Kuva profiil">
+      <Button fx:id="buttonKuvaProfiil" layoutX="98.0" layoutY="312.0" mnemonicParsing="false" onAction="#clickButtonKuvaProfiil" prefHeight="21.0" prefWidth="266.0" text="Kuva profiil">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
       <Line endX="236.0" layoutX="129.0" layoutY="300.0" startX="-30.0" />
-      <Button fx:id="buttonOstuajalugu" layoutX="98.0" layoutY="361.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="266.0" text="Kuva ostuajalugu">
+      <Button fx:id="buttonOstuajalugu" layoutX="98.0" layoutY="361.0" mnemonicParsing="false" onAction="#clickButtonOstuajalugu" prefHeight="39.0" prefWidth="266.0" text="Kuva ostuajalugu">
          <font>
             <Font size="18.0" />
          </font>

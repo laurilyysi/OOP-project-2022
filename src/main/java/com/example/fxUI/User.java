@@ -1,4 +1,4 @@
-package User;
+package com.example.fxUI;
 
 import java.util.ArrayList;
 
@@ -28,6 +28,8 @@ public class User {
         this.shoppinglist = new ArrayList<>();
     }
 
-
+    public String getUsername() {
+        return username;
+    }
 
 }

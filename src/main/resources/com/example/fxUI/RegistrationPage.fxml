@@ -33,6 +33,6 @@
       <CheckBox fx:id="rimikaart" layoutX="123.0" layoutY="394.0" mnemonicParsing="false" text="Rimi kaart (Rimi)" />
       <Line endX="263.0" layoutX="219.0" layoutY="304.0" startX="-102.0" />
       <Button layoutX="291.0" layoutY="318.0" mnemonicParsing="false" onAction="#clickButtonRegistreeru" prefHeight="98.0" prefWidth="189.0" text="Registreeru" />
-      <Button layoutX="116.0" layoutY="429.0" mnemonicParsing="false" onAction="#switchToLoginPage" prefHeight="25.0" prefWidth="366.0" text="Mine tagasi" />
+      <Button layoutX="116.0" layoutY="429.0" mnemonicParsing="false" onAction="#clickButtonMineTagasi" prefHeight="25.0" prefWidth="366.0" text="Mine tagasi" />
    </children>
 </AnchorPane>
