@@ -57,7 +57,6 @@ public class RegistrationPageController extends Controller {
             createNewUser();
             displaySuccessAlert();
             switchTo(event, "LoginPage.fxml");
-            // switchToLoginPage(event);
         } else {
             // displays error alert
             StringBuilder errors = new StringBuilder("");

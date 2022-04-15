@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 
 public class LoginPageController extends Controller {
 
@@ -36,7 +37,7 @@ public class LoginPageController extends Controller {
 
             String userInfoFileName = username + "_info.txt";
             String userFilePath = "data\\userdata\\" + username + "\\" + userInfoFileName;
-            String[] userInfo = String.valueOf(Files.readAllLines(Paths.get(userFilePath))).split(":");
+            String[] userInfo = Files.readAllLines(Paths.get(userFilePath)).get(0).split(":");
 
             currentUser = new User(userInfo[0], userInfo[1], Integer.parseInt(userInfo[2]), userInfo[3], userInfo[4],
                     Boolean.parseBoolean(userInfo[5]),
