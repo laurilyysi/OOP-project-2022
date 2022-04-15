@@ -11,52 +11,95 @@ import javafx.scene.text.Text;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.Scanner;
 
 public class MainMenuController extends Controller {
 
     public static final boolean debug = true;
-
-    @FXML private Text textWelcomeUser;
-    @FXML private Button buttonOstunimekiri;
-    @FXML private Button buttonMineOstlema;
-    @FXML private Button buttonArvutaTee;
-    @FXML private Button buttonKuvaProfiil;
-    @FXML private Button buttonOstuajalugu;
-    @FXML private Button buttonHaldaSopru;
-    @FXML private Button buttonLogiValja;
-
-    private User user = getCurrentUser();
+    private final User user = getCurrentUser();
+    @FXML
+    private Text textWelcomeUser;
+    @FXML
+    private Button buttonOstunimekiri;
+    @FXML
+    private Button buttonMineOstlema;
+    @FXML
+    private Button buttonArvutaTee;
+    @FXML
+    private Button buttonKuvaProfiil;
+    @FXML
+    private Button buttonOstuajalugu;
+    @FXML
+    private Button buttonHaldaSopru;
+    @FXML
+    private Button buttonLogiValja;
 
     // ---
 
-    // Ostunimekiri
-
-    @FXML private TextArea textareaList;
+    // OSTUNIMEKIRI
+    @FXML
+    private TextArea textareaList;
 
     public void clickButtonOstunimekiri(ActionEvent event) {
         if (debug) System.out.println("[MainMenu] Pressed button {Muuda ostunimekirja}");
-        try {
-            File userList = new File("data/userdata/"+ user.getUsername() + "/" + user.getListFileName());
-            try (FileInputStream fis = new FileInputStream(userList);
-                 FileOutputStream fos = new FileOutputStream(userList)) {
-                if (debug) System.out.println("[Ostunimekiri] Success");
+        switchTo(event, "Muuda.fxml");
+    }
 
-                // !!!
-
-                switchTo(event, "Muuda.fxml");
-
+    public void clickButtonOstunimekiriLaeFailist(ActionEvent event) {
+        File userList = new File("data/userdata/" + user.getUsername() + "/" + user.getListFileName());
+        textareaList.setText("");
+        try (Scanner scan = new Scanner(new FileInputStream(userList))) {
+            while (scan.hasNextLine()) {
+                String item = scan.nextLine();
+                textareaList.appendText(item + "\n");
             }
         } catch (Exception e) {
             if (debug) System.out.println("[Ostunimekiri] Exception " + e.getClass().getSimpleName());
-            System.out.println(e.getMessage());
         }
-
     }
 
+    // TODO: perhaps remind the user to save the file before going back to main menu
+    //  (if they haven't done so already)
     public void clickButtonOstunimekiriMineTagasi(ActionEvent event) {
-        switchTo(event, "MainMenu.fxml");
+        File userList = new File("data/userdata/" + user.getUsername() + "/" + user.getListFileName());
+
+        try (Scanner scan = new Scanner(new FileInputStream(userList))) {
+            user.clearList();
+            while (scan.hasNextLine()) {
+                String item = scan.nextLine();
+                user.addToList(item);
+            }
+
+            switchTo(event, "MainMenu.fxml");
+        } catch (Exception e) {
+            System.out.println("exc");
+        }
+    }
+
+    public void clickButtonOstunimekiriSalvesta(ActionEvent event) {
+        String enteredText = textareaList.getText();
+        String[] items = enteredText.split("\n");
+
+        File userList = new File("data/userdata/" + user.getUsername() + "/" + user.getListFileName());
+
+        try (FileOutputStream fos = new FileOutputStream(userList)) {
+            for (String item : items) {
+                fos.write(item.getBytes());
+                fos.write("\n".getBytes());
+            }
+        } catch (Exception e) {
+            System.out.println("exc");
+        }
+
+        Alert success = new Alert(Alert.AlertType.INFORMATION);
+        success.setTitle("Salvestatud");
+        success.setHeaderText("Ostunimekiri salvestatud");
+        success.showAndWait();
+
     }
     //ostunimekiri
 

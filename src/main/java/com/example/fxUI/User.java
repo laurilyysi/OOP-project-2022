@@ -40,6 +40,18 @@ public class User {
         return listFileName;
     }
 
+    public void addToList(String item) {
+        shoppinglist.add(item);
+    }
+
+    public void clearList() {
+        shoppinglist.clear();
+    }
+
+    public void printList() {
+        System.out.println(shoppinglist);
+    }
+
     @Override
     public String toString() {
         return "User{" +
