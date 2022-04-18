@@ -24,7 +24,6 @@ public class Controller {
 
     public void switchTo(ActionEvent event, String fxmlFile) {
         try {
-            // root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlFile)));
             root = new FXMLLoader(getClass().getResource(fxmlFile));
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             scene = new Scene(root.load());

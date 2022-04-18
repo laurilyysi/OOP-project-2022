@@ -2,18 +2,12 @@ package com.example.fxUI;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.text.Text;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.util.Arrays;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -21,29 +15,39 @@ public class MainMenuController extends Controller {
 
     public static final boolean debug = true;
     private final User user = getCurrentUser();
-    @FXML
-    private Text textWelcomeUser;
-    @FXML
-    private Button buttonOstunimekiri;
-    @FXML
-    private Button buttonMineOstlema;
-    @FXML
-    private Button buttonArvutaTee;
-    @FXML
-    private Button buttonKuvaProfiil;
-    @FXML
-    private Button buttonOstuajalugu;
-    @FXML
-    private Button buttonHaldaSopru;
-    @FXML
-    private Button buttonLogiValja;
 
-    // ---
+    // Main menu buttons
+    @FXML private Text textWelcomeUser;
+    @FXML private Button buttonOstunimekiri;
+    @FXML private Button buttonMineOstlema;
+    @FXML private Button buttonArvutaTee;
+    @FXML private Button buttonKuvaProfiil;
+    @FXML private Button buttonOstuajalugu;
+    @FXML private Button buttonHaldaSopru;
+    @FXML private Button buttonLogiValja;
 
-    // OSTUNIMEKIRI
-    @FXML
-    private TextArea textareaList;
+    // Muuda ostunimekirja
+    @FXML private TextArea textareaList;
 
+    // Mine ostlema
+    // Arvuta tee
+
+    // Kuva profiil
+    @FXML private PasswordField enterPassword;
+    @FXML private TextField enterAge;
+    @FXML private TextField enterEmail;
+    @FXML private TextField enterLocation;
+    @FXML private CheckBox saastukaart;
+    @FXML private CheckBox partnerkaart;
+    @FXML private CheckBox rimikaart;
+    private String infoString = "";
+    private boolean passwordOK = false;
+
+    // Kuva ostuajalugu
+    // Halda sõpru
+    // Logi välja
+
+    // <editor-fold desc="Ostunimekiri">
     public void clickButtonOstunimekiri(ActionEvent event) {
         if (debug) System.out.println("[MainMenu] Pressed button {Muuda ostunimekirja}");
         switchTo(event, "Muuda.fxml");
@@ -101,28 +105,44 @@ public class MainMenuController extends Controller {
         success.showAndWait();
 
     }
-    //ostunimekiri
+    // </editor-fold>
 
+    // <editor-fold desc="Mine ostlema">
     public void clickButtonMineOstlema(ActionEvent event) {
         if (debug) System.out.println("[MainMenu] Pressed button {Mine ostlema}");
     }
+    // </editor-fold>
 
+    // <editor-fold desc="Arvuta tee">
     public void clickButtonArvutaTee(ActionEvent event) {
         if (debug) System.out.println("[MainMenu] Pressed button {Arvuta tee}");
     }
+    // </editor-fold>
 
+    // <editor-fold desc="Kuva profiil">
     public void clickButtonKuvaProfiil(ActionEvent event) {
         if (debug) System.out.println("[MainMenu] Pressed button {Kuva profiil}");
+        switchTo(event, "Profiil.fxml");
     }
 
+    public void clickButtonKuvaProfiilMineTagasi(ActionEvent event) {
+        switchTo(event, "MainMenu.fxml");
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="Ostuajalugu">
     public void clickButtonOstuajalugu(ActionEvent event) {
         if (debug) System.out.println("[MainMenu] Pressed button {Ostuajalugu}");
     }
+    // </editor-fold>
 
+    // <editor-fold desc="Halda sõpru">
     public void clickButtonHaldaSopru(ActionEvent event) {
         if (debug) System.out.println("[MainMenu] Pressed button {Halda sõpru}");
     }
+    // </editor-fold>
 
+    // <editor-fold desc="Ostunimekiri">
     public void clickButtonLogiValja(ActionEvent event) {
 
         if (debug) System.out.println("[MainMenu] Pressed button {Logi välja}");
@@ -144,5 +164,6 @@ public class MainMenuController extends Controller {
         }
 
     }
+    // </editor-fold>
 
 }

@@ -23,22 +23,14 @@ public class RegistrationPageController extends Controller {
 
     private HashMap<String, String> userIDwithPassword = new HashMap<>();
 
-    @FXML
-    private TextField enterUsername;
-    @FXML
-    private PasswordField enterPassword;
-    @FXML
-    private TextField enterAge;
-    @FXML
-    private TextField enterEmail;
-    @FXML
-    private TextField enterLocation;
-    @FXML
-    private CheckBox saastukaart;
-    @FXML
-    private CheckBox partnerkaart;
-    @FXML
-    private CheckBox rimikaart;
+    @FXML private TextField enterUsername;
+    @FXML private PasswordField enterPassword;
+    @FXML private TextField enterAge;
+    @FXML private TextField enterEmail;
+    @FXML private TextField enterLocation;
+    @FXML private CheckBox saastukaart;
+    @FXML private CheckBox partnerkaart;
+    @FXML private CheckBox rimikaart;
 
     public void clickButtonRegistreeru(ActionEvent event) throws IOException {
 
@@ -101,7 +93,7 @@ public class RegistrationPageController extends Controller {
     }
 
     // https://stackoverflow.com/questions/8204680/java-regex-email
-    public static boolean validEmail(String email) {
+    public boolean validEmail(String email) {
         Pattern VALID_EMAIL_ADDRESS_REGEX =
                 Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);

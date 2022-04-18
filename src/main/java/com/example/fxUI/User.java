@@ -36,6 +36,10 @@ public class User {
         return username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public String getListFileName() {
         return listFileName;
     }
@@ -52,6 +56,34 @@ public class User {
         System.out.println(shoppinglist);
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setSaastukaart(boolean saastukaart) {
+        this.saastukaart = saastukaart;
+    }
+
+    public void setPartnerkaart(boolean partnerkaart) {
+        this.partnerkaart = partnerkaart;
+    }
+
+    public void setRimikaart(boolean rimikaart) {
+        this.rimikaart = rimikaart;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -60,4 +92,5 @@ public class User {
                 ", age=" + age +
                 '}';
     }
+
 }

@@ -16,8 +16,9 @@ public class TestFX extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("LoginPage.fxml")));
-        Scene scene = new Scene(root);
+        FXMLLoader root = new FXMLLoader(getClass().getResource("LoginPage.fxml"));
+        Scene scene = new Scene(root.load());
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
     }
