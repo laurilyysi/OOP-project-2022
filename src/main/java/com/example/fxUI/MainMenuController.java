@@ -6,8 +6,6 @@ import javafx.scene.control.*;
 import javafx.scene.text.Text;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -77,10 +75,9 @@ public class MainMenuController extends Controller {
                 String item = scan.nextLine();
                 user.addToList(item);
             }
-
             switchTo(event, "MainMenu.fxml");
         } catch (Exception e) {
-            System.out.println("exc");
+            if (debug) System.out.println("[Exception] clickButtonOstunimekiriMineTagasi " + e.getClass().getSimpleName());
         }
     }
 

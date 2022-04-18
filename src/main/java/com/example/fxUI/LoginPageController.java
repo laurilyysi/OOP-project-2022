@@ -17,10 +17,8 @@ public class LoginPageController extends Controller {
     private HashMap<String, String> userIDwithPassword = getUserIDwithPassword();
     private User currentUser;
 
-    @FXML
-    private TextField enterUsername;
-    @FXML
-    private PasswordField enterPassword;
+    @FXML private TextField enterUsername;
+    @FXML private PasswordField enterPassword;
 
     public void clickButtonLogiSisse(ActionEvent event) throws IOException {
         if (debug) System.out.println("[LoginPage] Button pressed {Logi sisse}");
@@ -43,7 +41,7 @@ public class LoginPageController extends Controller {
                     Boolean.parseBoolean(userInfo[6]),
                     Boolean.parseBoolean(userInfo[7]));
 
-            Controller.setCurrentUser(currentUser);
+            setCurrentUser(currentUser);
             switchTo(event, "MainMenu.fxml");
             displayLoginSuccess(event);
 

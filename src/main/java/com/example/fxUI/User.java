@@ -17,6 +17,10 @@ public class User {
     private ArrayList<String> shoppinglist;
 
     private String listFileName;
+    private String infoFileName;
+
+    private double totalMoneySpent;
+    private int totalItemsBought;
 
     public User(String username, String password, int age, String email, String location, boolean saastukaart, boolean partnerkaart, boolean rimikaart) {
         this.username = username;
@@ -30,14 +34,14 @@ public class User {
 
         this.shoppinglist = new ArrayList<>();
         this.listFileName = username + "_list.txt";
+        this.infoFileName = username + "_info.txt";
+
+        this.totalMoneySpent = 0.0;
+        this.totalItemsBought = 0;
     }
 
     public String getUsername() {
         return username;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public String getListFileName() {
@@ -52,45 +56,10 @@ public class User {
         shoppinglist.clear();
     }
 
-    public void printList() {
-        System.out.println(shoppinglist);
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public void setSaastukaart(boolean saastukaart) {
-        this.saastukaart = saastukaart;
-    }
-
-    public void setPartnerkaart(boolean partnerkaart) {
-        this.partnerkaart = partnerkaart;
-    }
-
-    public void setRimikaart(boolean rimikaart) {
-        this.rimikaart = rimikaart;
-    }
-
     @Override
     public String toString() {
-        return "User{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", age=" + age +
-                '}';
+        return "User: " + username + ", password: " + password + ", age: " + age +
+                ", email: " + email + ", location: " + location;
     }
 
 }
