@@ -16,7 +16,7 @@ public class Controller {
     private static final boolean debug = true;
 
     private HashMap<String, String> userIDwithPassword = new HashMap<>();
-    private User currentUser;
+    private static User currentUser;
 
     private Stage stage;
     private Scene scene;
@@ -48,11 +48,11 @@ public class Controller {
         return userIDwithPassword;
     }
 
-    public void setCurrentUser(User user) {
+    public static void setCurrentUser(User user) {
         currentUser = user;
     }
 
-    public User getCurrentUser() {
+    public static User getCurrentUser() {
         return currentUser;
     }
 

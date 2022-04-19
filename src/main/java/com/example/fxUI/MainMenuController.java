@@ -12,7 +12,7 @@ import java.util.Scanner;
 public class MainMenuController extends Controller {
 
     public static final boolean debug = true;
-    private final User user = getCurrentUser();
+    private User user = getCurrentUser();
 
     // Main menu buttons
     @FXML private Text textWelcomeUser;
@@ -139,7 +139,7 @@ public class MainMenuController extends Controller {
     }
     // </editor-fold>
 
-    // <editor-fold desc="Ostunimekiri">
+    // <editor-fold desc="Logi välja">
     public void clickButtonLogiValja(ActionEvent event) {
 
         if (debug) System.out.println("[MainMenu] Pressed button {Logi välja}");
