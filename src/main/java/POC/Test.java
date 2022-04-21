@@ -1,8 +1,36 @@
 package POC;
+import java.util.ArrayList;
 import java.util.List;
 public class Test {
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception{
 
+        List<StoreName> storeNames = new ArrayList<>();
+        storeNames.add(StoreName.coop);
+        storeNames.add(StoreName.maxima);
+        storeNames.add(StoreName.prisma);
+        storeNames.add(StoreName.rimi);
+        storeNames.add(StoreName.selver);
+
+        ArrayList<String> products = new ArrayList<>();
+        products.add("makaron");
+        products.add("sai");
+        products.add("piim");
+
+        ArrayList<Thread> listOfWorkers = new ArrayList<>();
+
+
+        for (int i=0;i<5;i++){
+            for (String product : products) {
+                Thread worker = new Thread(new Worker(storeNames.get(i), product));
+                listOfWorkers.add(worker);
+                worker.start();
+            }
+        }
+
+        for (Thread worker : listOfWorkers) {
+            worker.join();
+        }
+/*
         List<Product> listCoop = Coop.searchProducts("makaron");
         double priceCoop;
         double cheapestPriceCoop = Double.MAX_VALUE;
@@ -79,5 +107,7 @@ public class Test {
         }
         System.out.println("Neist odavaim on " + cheapestProductRimi.toString());
         System.out.println(listRimi.size());
+
+ */
     }
 }
