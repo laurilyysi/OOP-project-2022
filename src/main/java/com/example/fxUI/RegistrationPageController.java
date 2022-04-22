@@ -6,6 +6,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +33,11 @@ public class RegistrationPageController extends Controller {
     @FXML private CheckBox partnerkaart;
     @FXML private CheckBox rimikaart;
 
+    @FXML private Text textUsername;
+    @FXML private Text textPassword;
+    @FXML private Text textAge;
+    @FXML private Text textEmail;
+
     public void clickButtonRegistreeru(ActionEvent event) throws IOException {
 
         if (debug) System.out.println("[RegistrationPage] Button pressed {Loo konto}");
@@ -51,12 +57,20 @@ public class RegistrationPageController extends Controller {
             switchTo(event, "LoginPage.fxml");
         } else {
             // displays error alert
+
             StringBuilder errors = new StringBuilder("");
 
             if (!usernameOK) errors.append("Vigane kasutajanimi\n");
+            else textUsername.setUnderline(false);
+
             if (!passwordOK) errors.append("Vigane parool\n");
+            else textPassword.setUnderline(false);
+
             if (!ageOK) errors.append("Vigane vanus\n");
+            else textAge.setUnderline(false);
+
             if (!emailOK) errors.append("Vigane email\n");
+            else textEmail.setUnderline(false);
 
             Alert failed = new Alert(Alert.AlertType.ERROR);
             failed.setTitle("Viga");
@@ -75,12 +89,16 @@ public class RegistrationPageController extends Controller {
         boolean validLength = username.length() >= 3 && username.length() <= 18;
         boolean validCharacters = username.matches("[A-Za-z0-9]*");
         boolean doesntAlreadyExist = !userIDwithPassword.containsKey(username);
+
+        textUsername.setUnderline(!(validLength && validCharacters && doesntAlreadyExist));
         return validLength && validCharacters && doesntAlreadyExist;
     }
 
     public boolean validPassword(String password) {
         boolean validLength = password.length() >= 3;
         boolean doesntContainColon = !password.contains(":");
+
+        textPassword.setUnderline(!(validLength && doesntContainColon));
         return validLength && doesntContainColon;
     }
 
@@ -88,6 +106,7 @@ public class RegistrationPageController extends Controller {
         try {
             return Integer.parseInt(age) >= 0;
         } catch (NumberFormatException e) {
+            textAge.setUnderline(true);
             return false;
         }
     }
@@ -97,7 +116,10 @@ public class RegistrationPageController extends Controller {
         Pattern VALID_EMAIL_ADDRESS_REGEX =
                 Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
-        return matcher.find();
+
+        boolean result = matcher.find();
+        textEmail.setUnderline(!result);
+        return result;
     }
 
     public void createNewUser() throws IOException {
@@ -128,11 +150,9 @@ public class RegistrationPageController extends Controller {
         String userPath = "data\\userdata\\" + username;
         String userInfoFile = username + "_info.txt";
         new File(userPath).mkdirs();
-        File userFile = new File(userPath + "\\" + userInfoFile);
         Files.write(Path.of(userPath + "\\" + userInfoFile), userInfo.getBytes());
 
         // list for user
-        File userList = new File(userPath + "\\" + username + "_list.txt");
         Files.write(Path.of(userPath + "\\" + username + "_list.txt"), "".getBytes());
 
         System.out.println("Successful registration");
