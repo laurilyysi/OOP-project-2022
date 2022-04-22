@@ -2,10 +2,15 @@ package com.example.fxUI;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import java.io.*;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -31,15 +36,12 @@ public class MainMenuController extends Controller {
     // Arvuta tee
 
     // Kuva profiil
-    @FXML private PasswordField enterPassword;
-    @FXML private TextField enterAge;
-    @FXML private TextField enterEmail;
-    @FXML private TextField enterLocation;
-    @FXML private CheckBox saastukaart;
-    @FXML private CheckBox partnerkaart;
-    @FXML private CheckBox rimikaart;
-    private String infoString = "";
-    private boolean passwordOK = false;
+    @FXML private Text textUsername;
+    @FXML private Text textShoppingCount;
+    @FXML private Text textTotalMoneySpent;
+    @FXML private Text textTotalItemsBought;
+    @FXML private Text textFavoriteStore;
+    @FXML private Button buttonKuvaOmaAndmed;
 
     // Kuva ostuajalugu
     // Halda sõpru
@@ -120,6 +122,15 @@ public class MainMenuController extends Controller {
     public void clickButtonKuvaProfiil(ActionEvent event) {
         if (debug) System.out.println("[MainMenu] Pressed button {Kuva profiil}");
         switchTo(event, "Profiil.fxml");
+    }
+
+    public void clickButtonKuvaOmaAndmed(ActionEvent event) {
+        buttonKuvaOmaAndmed.setVisible(false);
+        textUsername.setText("Kasutajanimi: " + user.getUsername());
+        textShoppingCount.setText("Ostukordi kokku: " + user.getShoppingCount());
+        textTotalItemsBought.setText("Kokku tooteid ostetud: " + user.getTotalMoneySpent());
+        textTotalMoneySpent.setText("Raha kulutatud: " + user.getTotalMoneySpent() + " €");
+        textFavoriteStore.setText("Lemmikpood: " + user.getFavoriteStore());
     }
 
     public void clickButtonKuvaProfiilMineTagasi(ActionEvent event) {

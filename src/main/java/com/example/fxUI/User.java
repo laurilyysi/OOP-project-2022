@@ -19,8 +19,11 @@ public class User {
     private String listFileName;
     private String infoFileName;
 
-    private double totalMoneySpent;
+    private int shoppingCount;
     private int totalItemsBought;
+    private double totalMoneySpent;
+    private String favoriteStore;
+
 
     public User(String username, String password, int age, String email, String location, boolean saastukaart, boolean partnerkaart, boolean rimikaart) {
         this.username = username;
@@ -36,8 +39,11 @@ public class User {
         this.listFileName = username + "_list.txt";
         this.infoFileName = username + "_info.txt";
 
-        this.totalMoneySpent = 0.0;
+        this.shoppingCount = 0;
         this.totalItemsBought = 0;
+        this.totalMoneySpent = 0.0;
+        this.favoriteStore = "";
+
     }
 
     public String getUsername() {
@@ -54,6 +60,22 @@ public class User {
 
     public void clearList() {
         shoppinglist.clear();
+    }
+
+    public int getShoppingCount() {
+        return shoppingCount;
+    }
+
+    public int getTotalItemsBought() {
+        return totalItemsBought;
+    }
+
+    public double getTotalMoneySpent() {
+        return totalMoneySpent;
+    }
+
+    public String getFavoriteStore() {
+        return favoriteStore;
     }
 
     @Override
