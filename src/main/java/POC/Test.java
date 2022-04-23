@@ -37,19 +37,6 @@ public class Test {
                 }
             }
         }
-       /*if (i > freeProccessors) {
-            for (Thread worker : listOfWorkers){
-                worker.join();
-            }
-        }
-
-        for (int i=0;i<5;i++){
-            for (String product : products) {
-                Thread worker = new Thread(new Worker(storeNames.get(i), product));
-                listOfWorkers.add(worker);
-                worker.start();
-            }
-        }*/
         for (Thread worker : listOfWorkers) {
             worker.join();
             listOfWorkers.remove(worker);
