@@ -16,8 +16,6 @@ public class Maxima implements Store {
     // false - no system output (preferred when not testing)
     private static final boolean debug = true;
 
-    // TODO: maybe add support for multiple page scraping, if 52 items isn't enough
-
     public static List<Product> searchProducts(String keyword) {
         List<Product> allProducts = new ArrayList<>();
 
