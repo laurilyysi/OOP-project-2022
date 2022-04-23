@@ -6,10 +6,16 @@ public class Worker implements Runnable{
     StoreName storeName;
     String product;
     List<Product> products;
+    Product cheapestProduct;
+    double cheapestPrice = Double.MAX_VALUE;
 
     public Worker(StoreName storeName, String product) {
         this.storeName = storeName;
         this.product = product;
+    }
+
+    public Product getCheapestProduct() {
+        return cheapestProduct;
     }
 
     @Override
@@ -31,7 +37,11 @@ public class Worker implements Runnable{
         }
         System.out.println(storeName);
         for (Product product : products) {
-            System.out.println(product);
+            if (product.getPrice() < cheapestPrice) {
+                cheapestProduct = product;
+            }
         }
+
+        System.out.println(cheapestProduct.toString());
     }
 }
