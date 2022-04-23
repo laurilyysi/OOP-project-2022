@@ -62,6 +62,10 @@ public class User {
         shoppinglist.clear();
     }
 
+    public ArrayList<String> getShoppinglist() {
+        return shoppinglist;
+    }
+
     public int getShoppingCount() {
         return shoppingCount;
     }

@@ -10,6 +10,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
@@ -109,6 +110,19 @@ public class MainMenuController extends Controller {
     // <editor-fold desc="Mine ostlema">
     public void clickButtonMineOstlema(ActionEvent event) {
         if (debug) System.out.println("[MainMenu] Pressed button {Mine ostlema}");
+
+        File userList = new File("data/userdata/" + user.getUsername() + "/" + user.getListFileName());
+
+        try (Scanner scan = new Scanner(new FileInputStream(userList))) {
+            user.clearList();
+            while (scan.hasNextLine()) {
+                String item = scan.nextLine();
+                user.addToList(item);
+            }
+        } catch (FileNotFoundException ignored) {}
+
+        // user.getShoppinglist().forEach(System.out::println);
+
     }
     // </editor-fold>
 
