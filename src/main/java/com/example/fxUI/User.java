@@ -54,6 +54,10 @@ public class User {
         return listFileName;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
     public void addToList(String item) {
         shoppinglist.add(item);
     }
