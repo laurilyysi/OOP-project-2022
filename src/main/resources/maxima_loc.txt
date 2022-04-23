@@ -1,0 +1,9 @@
+Saare Maxima	58.3751, 26.7562
+Ilmatsalu Maxima	58.3784, 26.6847
+Kalda tee Maxima X	58.3700, 26.7684
+Anne Maxima	58.3786, 26.7500
+Vahi Maxima	58.4021, 26.7222
+Zeppelini Maxima	58.3745, 26.7358
+Sõbrakeskuse Maxima	58.3649, 26.7197
+Raadi Maxima	58.3918, 26.7304
+Kalda tee Maxima XX	58.3712, 26.7630
