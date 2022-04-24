@@ -2,9 +2,12 @@ package POC;
 
 import java.util.ArrayList;
 
+import static POC.StoreName.*;
+
 public class SearchOptions {
 
     private ArrayList<String> shoppinglist;
+    private static ArrayList<StoreName> stores = new ArrayList<>();
 
     private boolean searchCoop;
     private boolean searchMaxima;
@@ -17,12 +20,16 @@ public class SearchOptions {
     public SearchOptions(ArrayList<String> shoppinglist, boolean searchCoop, boolean searchMaxima, boolean searchPrisma,
                          boolean searchRimi, boolean searchSelver, String address) {
         this.shoppinglist = shoppinglist;
-        this.searchCoop = searchCoop;
-        this.searchMaxima = searchMaxima;
-        this.searchPrisma = searchPrisma;
-        this.searchRimi = searchRimi;
-        this.searchSelver = searchSelver;
+        if (searchCoop) stores.add(coop);
+        if (searchMaxima) stores.add(maxima);
+        if (searchPrisma) stores.add(prisma);
+        if (searchRimi) stores.add(rimi);
+        if (searchSelver) stores.add(selver);
         this.address = address;
+    }
+
+    public static ArrayList<StoreName> getStores() {
+        return stores;
     }
 
     public boolean isSearchCoop() {

@@ -1,5 +1,7 @@
 package POC;
 
+import com.example.fxUI.OptionsController;
+
 import java.util.List;
 
 public class Worker implements Runnable{
@@ -12,10 +14,6 @@ public class Worker implements Runnable{
     public Worker(StoreName storeName, String product) {
         this.storeName = storeName;
         this.product = product;
-    }
-
-    public Product getCheapestProduct() {
-        return cheapestProduct;
     }
 
     @Override
@@ -42,6 +40,9 @@ public class Worker implements Runnable{
             }
         }
 
+        OptionsController.addToCheapestProductsArrayList(cheapestProduct);
         System.out.println(cheapestProduct.toString());
     }
+
+
 }

@@ -1,6 +1,9 @@
 package com.example.fxUI;
 
+import POC.Product;
 import POC.SearchOptions;
+import POC.StoreName;
+import POC.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -11,7 +14,11 @@ import javafx.scene.control.TextField;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+
+import static POC.StoreName.*;
 
 public class OptionsController extends Controller {
 
@@ -23,6 +30,7 @@ public class OptionsController extends Controller {
 
     @FXML TextField enterAddress;
 
+    private static ArrayList<Product> cheapestProducts = new ArrayList<>();
     private User user = getCurrentUser();
     private String address = user.getLocation();
 
@@ -31,7 +39,11 @@ public class OptionsController extends Controller {
     @FXML Button buttonBeginSearch;
     @FXML Button buttonOptionsGoBack;
 
-    public void clickButtonBeginSearch(ActionEvent event) {
+    public static void addToCheapestProductsArrayList(Product product) {
+        cheapestProducts.add(product);
+    }
+
+    public synchronized void clickButtonBeginSearch(ActionEvent event) throws InterruptedException {
 
         File userList = new File("data/userdata/" + user.getUsername() + "/" + user.getListFileName());
 
@@ -43,7 +55,8 @@ public class OptionsController extends Controller {
             }
         } catch (FileNotFoundException ignored) {}
 
-        SearchOptions options = new SearchOptions(user.getShoppinglist(),
+        ArrayList<String> shoppingList = user.getShoppinglist();
+        new SearchOptions(shoppingList,
                 checkCoop.isSelected(),
                 checkMaxima.isSelected(),
                 checkPrisma.isSelected(),
@@ -51,13 +64,40 @@ public class OptionsController extends Controller {
                 checkSelver.isSelected(),
                 address);
 
-        System.out.println(options);
+        List<StoreName> storeNames = SearchOptions.getStores();
+        ArrayList<Thread> listOfWorkers = new ArrayList<>();
 
-        // -- begin multithread --
-        // vb seda searchoptions pole vajagi kui sa teed multithreadimist siin
-        // aga ilmselt on seda mugavam teha seal POC packages
+        int freeProcessors = Runtime.getRuntime().availableProcessors();
+
+        for (String item : shoppingList) {
+            for (StoreName storeName : storeNames) {
+                if (listOfWorkers.size() > freeProcessors) {
+                    for (Thread worker : listOfWorkers) {
+                        worker.join();
+                        listOfWorkers.remove(worker);
+                    }
+                }
+                if (listOfWorkers.size() <= freeProcessors) {
+                    Thread worker = new Thread(new Worker(storeName, item));
+                    listOfWorkers.add(worker);
+                    worker.start();
+                }
+            }
+        }
+        for (Thread worker : listOfWorkers) {
+            worker.join();
+            listOfWorkers.remove(worker);
+        }
+
+        for (Product item : cheapestProducts) {
+            System.out.println(item.toString());
+        }
+
+        // TODO: 4/24/2022 Marek - fix synchronization issue in multithreading(not showing what items are in cheapestproducts and im not even sure if thing are in cheapestproducts)
 
     }
+
+
 
     public void clickButtonInsertNewAddress(ActionEvent event) {
 

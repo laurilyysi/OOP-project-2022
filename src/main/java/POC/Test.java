@@ -1,17 +1,17 @@
 package POC;
 import java.util.ArrayList;
 import java.util.List;
+
+import static POC.StoreName.*;
+
 public class Test {
     public static void main(String[] args) throws Exception{
 
         long start1 = System.nanoTime();
 
-        List<StoreName> storeNames = new ArrayList<>();
-        storeNames.add(StoreName.coop);
-        storeNames.add(StoreName.maxima);
-        storeNames.add(StoreName.prisma);
-        storeNames.add(StoreName.rimi);
-        storeNames.add(StoreName.selver);
+        StoreName[] storeNamesArray = {coop, maxima, prisma, rimi, selver};
+        List<StoreName> storeNames = List.of(storeNamesArray);
+
 
         ArrayList<String> products = new ArrayList<>();
         products.add("makaron");
@@ -20,7 +20,7 @@ public class Test {
 
 
         ArrayList<Thread> listOfWorkers = new ArrayList<>();
-        int freeProcessors = Runtime.getRuntime().availableProcessors();
+        /*int freeProcessors = Runtime.getRuntime().availableProcessors();
 
         for (String product : products) {
             for (StoreName storeName : storeNames) {
@@ -44,6 +44,6 @@ public class Test {
 
 
         long end = System.nanoTime();
-        System.out.println(end - start1);
+        System.out.println(end - start1);*/
     }
 }
