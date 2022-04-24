@@ -4,6 +4,7 @@ import POC.Product;
 import POC.SearchOptions;
 import POC.StoreName;
 import POC.Worker;
+import Tee.Location;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import static POC.StoreName.*;
+import static Tee.Test.*;
 
 public class OptionsController extends Controller {
 
@@ -98,7 +100,7 @@ public class OptionsController extends Controller {
     }
 
 
-
+    // hetkel ainult koordinaatidega
     public void clickButtonInsertNewAddress(ActionEvent event) {
 
         address = enterAddress.getText();
@@ -108,11 +110,55 @@ public class OptionsController extends Controller {
         info.setHeaderText("Aadress uuendatud, otsimisel kasutatakse aadressi: " + enterAddress.getText());
         info.showAndWait();
 
+        shortestPath(address);
+
     }
 
     public void clickButtonUseExistingAddress(ActionEvent event) {
         enterAddress.setText(user.getLocation());
         address = user.getLocation();
+
+        shortestPath(address);
+
+    }
+
+    public void shortestPath(String address) {
+
+        if (validCoordinates(address)) {
+            String[] coords = address.split(", ");
+
+            double lat = Double.parseDouble(coords[0].substring(0, 5));
+            double lon = Double.parseDouble(coords[1].substring(0, 5));
+
+            StringBuilder searchStores = new StringBuilder("");
+
+            if (checkCoop.isSelected()) searchStores.append("C");
+            if (checkMaxima.isSelected()) searchStores.append("M");
+            if (checkPrisma.isSelected()) searchStores.append("P");
+            if (checkRimi.isSelected()) searchStores.append("R");
+            if (checkSelver.isSelected()) searchStores.append("S");
+
+            paths.clear();
+
+            findShortestPaths(lat, lon, searchStores.toString());
+
+            String shortest = String.valueOf(paths.get(0));
+            String otheroptions = "";
+
+            if (paths.size() >= 3) otheroptions = paths.get(1) + " \n" + paths.get(2);
+
+            Alert result = new Alert(Alert.AlertType.INFORMATION);
+            result.setTitle("Lühim tee");
+            result.setHeaderText("Lühim tee linnulennult on " + shortest);
+            if (!otheroptions.equals("")) result.setContentText("Sobivad ka:\n\n" + otheroptions);
+            result.showAndWait();
+
+        }
+
+        else {
+            System.out.println("Invalid coordinates");
+        }
+
     }
 
     public void clickButtonOptionsGoBack(ActionEvent event) {

@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static Tee.Test.validCoordinates;
+
 public class RegistrationPageController extends Controller {
 
     private static final boolean debug = true;
@@ -36,6 +38,7 @@ public class RegistrationPageController extends Controller {
     @FXML private Text textUsername;
     @FXML private Text textPassword;
     @FXML private Text textAge;
+    @FXML private Text textAddress;
     @FXML private Text textEmail;
 
     public void clickButtonRegistreeru(ActionEvent event) throws IOException {
@@ -46,9 +49,10 @@ public class RegistrationPageController extends Controller {
         boolean usernameOK = validUsername(enterUsername.getText());
         boolean passwordOK = validPassword(enterPassword.getText());
         boolean ageOK = validAge(enterAge.getText());
+        boolean locationOK = validCoordinates(enterLocation.getText());
         boolean emailOK = validEmail(enterEmail.getText());
 
-        boolean allValid = usernameOK && passwordOK && ageOK && emailOK;
+        boolean allValid = usernameOK && passwordOK && ageOK && locationOK && emailOK;
 
         if (allValid) {
             userIDwithPassword = updateUserIDwithPassword();
@@ -68,6 +72,9 @@ public class RegistrationPageController extends Controller {
 
             if (!ageOK) errors.append("Vigane vanus\n");
             else textAge.setUnderline(false);
+
+            if (!locationOK) errors.append("Vigased koordinaadid\n");
+            else textAddress.setUnderline(false);
 
             if (!emailOK) errors.append("Vigane email\n");
             else textEmail.setUnderline(false);
@@ -128,7 +135,7 @@ public class RegistrationPageController extends Controller {
         String password = enterPassword.getText();
         String age = enterAge.getText();
         String email = enterEmail.getText();
-        String location = "AADRESS"; // TODO: change this
+        String location = enterLocation.getText();
         boolean ownsSaastukaart = saastukaart.isSelected();
         boolean ownsPartnerkaart = partnerkaart.isSelected();
         boolean ownsRimikaart = rimikaart.isSelected();

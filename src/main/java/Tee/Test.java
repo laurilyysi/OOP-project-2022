@@ -18,21 +18,11 @@ public class Test {
     public static Location startLocation;
     public static ArrayList<Result> paths = new ArrayList<>();
 
-    public static void main(String[] args) {
-
-        Location delta = new Location(58.38511, 26.72512);
-        // findShortestPaths(delta.getLat(), delta.getLon(), "all");
-
-        findShortestPaths(58.37802, 26.72908, "all");
-
-    }
-
     public static void findShortestPaths(double lat, double lon, String storeTypes) {
         startLocation = new Location(lat, lon);
         if (storeTypes.equals("all")) storeTypes = "CMPRS";
         findAllWays(storeTypes, "");
         Collections.sort(paths);
-        paths.forEach(System.out::println);
     }
 
     public static Result findPath(Location start, String lookFor) {
@@ -139,6 +129,10 @@ public class Test {
             }
         } catch (FileNotFoundException ignored) {}
         return locations;
+    }
+
+    public static boolean validCoordinates(String coords) {
+        return coords.matches("^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$");
     }
 
 }

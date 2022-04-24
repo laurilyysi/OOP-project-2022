@@ -13,14 +13,14 @@ public class Result implements Comparable<Result> {
     }
 
     public String pathToString() {
-        StringBuilder str = new StringBuilder("");
+        StringBuilder str = new StringBuilder(" • ");
         path.forEach(loc -> str.append(loc.getName()).append(" -> "));
         return str.substring(0, str.length() - 3);
     }
 
     @Override
     public String toString() {
-        return "distance: " + distanceKM + " km\t|\t" + pathToString();
+        return distanceKM + " km\n" + pathToString();
     }
 
     @Override
