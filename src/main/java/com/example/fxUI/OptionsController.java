@@ -32,8 +32,8 @@ public class OptionsController extends Controller {
 
     @FXML TextField enterAddress;
 
-    private static ArrayList<Product> cheapestProducts = new ArrayList<>();
-    private User user = getCurrentUser();
+    final private static ArrayList<Product> cheapestProducts = new ArrayList<>();
+    final private User user = getCurrentUser();
     private String address = user.getLocation();
 
     @FXML Button buttonSaveAddress;
@@ -70,26 +70,28 @@ public class OptionsController extends Controller {
         ArrayList<Thread> listOfWorkers = new ArrayList<>();
 
         int freeProcessors = Runtime.getRuntime().availableProcessors();
+        int listOfWorkersSize;
 
-        for (String item : shoppingList) {
+        for (String s : shoppingList) {
             for (StoreName storeName : storeNames) {
-                if (listOfWorkers.size() > freeProcessors) {
-                    for (Thread worker : listOfWorkers) {
-                        worker.join();
-                        listOfWorkers.remove(worker);
+                listOfWorkersSize = listOfWorkers.size();
+                if (listOfWorkersSize > freeProcessors) {
+                    for (int k = 0; k < listOfWorkersSize; k++) {
+                        listOfWorkers.get(k).join();
                     }
+                    listOfWorkers.clear();
                 }
                 if (listOfWorkers.size() <= freeProcessors) {
-                    Thread worker = new Thread(new Worker(storeName, item));
+                    Thread worker = new Thread(new Worker(storeName, s));
                     listOfWorkers.add(worker);
                     worker.start();
                 }
             }
         }
-        for (Thread worker : listOfWorkers) {
-            worker.join();
-            listOfWorkers.remove(worker);
+        for (int i = 0; i < listOfWorkers.size();) {
+            listOfWorkers.get(i).join();
         }
+
 
         for (Product item : cheapestProducts) {
             System.out.println(item.toString());
@@ -130,7 +132,7 @@ public class OptionsController extends Controller {
             double lat = Double.parseDouble(coords[0].substring(0, 5));
             double lon = Double.parseDouble(coords[1].substring(0, 5));
 
-            StringBuilder searchStores = new StringBuilder("");
+            StringBuilder searchStores = new StringBuilder();
 
             if (checkCoop.isSelected()) searchStores.append("C");
             if (checkMaxima.isSelected()) searchStores.append("M");
