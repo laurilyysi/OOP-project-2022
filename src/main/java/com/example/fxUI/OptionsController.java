@@ -97,7 +97,7 @@ public class OptionsController extends Controller {
             System.out.println(item.toString());
         }
 
-        // TODO: 4/24/2022 Marek - fix synchronization issue in multithreading(not showing what items are in cheapestproducts and im not even sure if thing are in cheapestproducts)
+        // TODO: 4/27/2022 we have list of cheapestProducts now place code that comes next here.
 
     }
 
