@@ -7,6 +7,6 @@ module com.example.oopprojekt {
     requires org.seleniumhq.selenium.support;
 
 
-    opens com.example.fxUI to javafx.fxml;
-    exports com.example.fxUI;
+    opens com.example.GUI to javafx.fxml;
+    exports com.example.GUI;
 }
