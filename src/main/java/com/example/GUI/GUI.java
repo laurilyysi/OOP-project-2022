@@ -1,14 +1,27 @@
 package com.example.GUI;
 
+import POC.DiscountType;
 import POC.Product;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Side;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,6 +38,7 @@ public class GUI extends Application {
     private static HashMap<String, String> userIDwithPassword = new HashMap<>();
     private static User user;
     private static Scene scene;
+    private static ArrayList<HashMap<String, ArrayList<Product>>> result = new ArrayList<>();
 
     public static void main(String[] args) {
         launch(args);
@@ -670,12 +684,14 @@ public class GUI extends Application {
                 }
             } catch (FileNotFoundException ignored) {}
 
-            ArrayList<HashMap<String, ArrayList<Product>>> result = beginSearch(user.getShoppinglist(), checkCoop.isSelected(), checkMaxima.isSelected(),
+            result = beginSearch(user.getShoppinglist(), checkCoop.isSelected(), checkMaxima.isSelected(),
                     checkPrisma.isSelected(), checkRimi.isSelected(), checkSelver.isSelected());
 
+            // shopping page
+            scene.setRoot(shoppingScene());
+
+            /*
             System.out.println("DONE");
-
-
 
             for (HashMap<String, ArrayList<Product>> map : result) {
 
@@ -688,6 +704,7 @@ public class GUI extends Application {
                 System.out.println();
 
             }
+            */
 
 
         });
@@ -704,6 +721,166 @@ public class GUI extends Application {
         });
 
         root.getChildren().add(goBack);
+
+        return root;
+
+    }
+
+    private static Group shoppingScene() {
+
+        Group root = new Group();
+
+        TabPane tabPane = new TabPane();
+        tabPane.setSide(Side.TOP);
+        tabPane.setPrefSize(450, 550);
+
+        Tab vali = new Tab("Vali");
+        vali.setClosable(false);
+        AnchorPane valiTab = new AnchorPane();
+
+            ScrollPane scrollPane = new ScrollPane();
+            scrollPane.setPrefSize(420, 387);
+            scrollPane.setLayoutX(14);
+            scrollPane.setLayoutY(14);
+            valiTab.getChildren().add(scrollPane);
+
+            VBox vbox = new VBox();
+
+            Text preShopInfo = new Text("\n\n\n\n\n\n\n\n\n                 Vali rippmenüüst toode. Erinevad valikud ilmuvad siia kasti.");
+            vbox.getChildren().add(preShopInfo);
+
+            scrollPane.setContent(vbox);
+
+            Text toode = new Text("Toode");
+            toode.setLayoutX(24);
+            toode.setLayoutY(427);
+            valiTab.getChildren().add(toode);
+
+            ChoiceBox<String> dropdown = new ChoiceBox<>();
+            dropdown.setPrefSize(225, 25);
+            dropdown.setLayoutX(68);
+            dropdown.setLayoutY(408);
+            ObservableList<String> dropdownItems = FXCollections.observableArrayList(user.getShoppinglist());
+            dropdown.setItems(dropdownItems);
+
+            dropdown.setOnAction(event -> {
+                vbox.getChildren().clear();
+
+                String selected = dropdown.getValue();
+
+                HashMap<String, ArrayList<Product>> products = result.get(user.getShoppinglist().indexOf(selected));
+
+                Collections.sort(products.get(selected));
+
+                for (Product product : products.get(selected)) {
+
+                    Pane pane = new Pane();
+                    pane.setPrefSize(402, 100);
+                    pane.setPadding(new Insets(20, 10, 20, 10));
+                    pane.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3,4,3,4))));
+
+                    Text productName = new Text(product.getName());
+                    productName.setX(103);
+                    productName.setY(27);
+
+                    Text productStore = new Text(product.getStore());
+                    productStore.setX(103);
+                    productStore.setY(82);
+
+                    Text productPrice = new Text();
+
+                    if (product.getDiscountType() != DiscountType.noDiscount) {
+                        productPrice.setText(product.getPreSalePrice() + " €");
+                        productPrice.setStrikethrough(true);
+                        productPrice.setFill(Color.GRAY);
+                        productPrice.setFont(new Font(14));
+                        productPrice.setX(170);
+                        productPrice.setY(58);
+
+                        Text discountPrice = new Text(product.getPrice() + " €");
+
+                        discountPrice.setFill(Color.RED);
+                        if (product.getDiscountType() == DiscountType.discountCard) discountPrice.setFill(Color.ORANGE);
+
+                        discountPrice.setFont(new Font(20));
+                        discountPrice.setStyle("-fx-font-weight: bold");
+                        discountPrice.setX(103);
+                        discountPrice.setY(58);
+
+                        pane.getChildren().add(discountPrice);
+                    }
+
+                    else {
+                        productPrice.setText(product.getPrice() + " €");
+                        productPrice.setFont(new Font(20));
+                        productPrice.setX(103);
+                        productPrice.setY(58);
+                    }
+
+                    Image image = product.getImage(); // new Image(product.getImgURL(), 90, 90, true, false);
+                    ImageView imgView = new ImageView(image);
+                    imgView.setX(6);
+                    imgView.setY(6);
+                    imgView.prefHeight(90);
+                    imgView.prefWidth(90);
+
+                    Button addTo = new Button("Lisa korvi");
+
+                    // TODO: add to basket functionality here
+                    addTo.setOnAction(addToBasket -> {
+                        System.out.println(product.getName());
+                    });
+
+                    addTo.setLayoutX(320);
+                    addTo.setLayoutY(64);
+
+                    pane.getChildren().add(productName);
+                    pane.getChildren().add(productStore);
+                    pane.getChildren().add(productPrice);
+                    pane.getChildren().add(imgView);
+                    pane.getChildren().add(addTo);
+                    vbox.getChildren().add(pane);
+
+                }
+
+            });
+
+            valiTab.getChildren().add(dropdown);
+
+            Button eelmine = new Button("Eelmine");
+            eelmine.setLayoutX(304);
+            eelmine.setLayoutY(408);
+            valiTab.getChildren().add(eelmine);
+
+            Button jargmine = new Button("Järgmine");
+            jargmine.setLayoutX(370);
+            jargmine.setLayoutY(408);
+            valiTab.getChildren().add(jargmine);
+
+            Button lopeta = new Button("Lõpeta");
+            lopeta.setLayoutX(381);
+            lopeta.setLayoutY(481);
+
+            lopeta.setOnAction(event -> {
+                System.out.println("Lõpeta");
+            });
+
+            valiTab.getChildren().add(lopeta);
+
+        vali.setContent(valiTab);
+
+        Tab kuva = new Tab("Kuva");
+        kuva.setClosable(false);
+        AnchorPane kuvaTab = new AnchorPane();
+
+            // siia
+            // sisse
+
+        kuva.setContent(kuvaTab);
+
+        tabPane.getTabs().add(vali);
+        tabPane.getTabs().add(kuva);
+        root.getChildren().add(tabPane);
 
         return root;
 

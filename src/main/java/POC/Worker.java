@@ -1,6 +1,6 @@
 package POC;
 
-import com.example.fxUI.OptionsController;
+// import com.example.fxUI.OptionsController;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class Worker implements Runnable{
             }
         }
 
-        OptionsController.addToCheapestProductsArrayList(cheapestProduct);
+        // OptionsController.addToCheapestProductsArrayList(cheapestProduct);
         System.out.println(cheapestProduct.toString());
     }
 
