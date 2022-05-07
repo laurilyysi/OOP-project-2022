@@ -1,5 +1,6 @@
 package com.example.GUI;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class User {
@@ -19,13 +20,15 @@ public class User {
     private String listFileName;
     private String infoFileName;
 
-    private int shoppingCount;
-    private int totalItemsBought;
-    private double totalMoneySpent;
-    private String favoriteStore;
+    private int totalVisits;
+    private int totalBought;
+    private double totalSpent;
+    private double totalSaved;
+    private String mostVisited;
 
 
-    public User(String username, String password, int age, String email, String location, boolean saastukaart, boolean partnerkaart, boolean rimikaart) {
+    public User(String username, String password, int age, String email, String location, boolean saastukaart, boolean partnerkaart, boolean rimikaart,
+                int totalVisits, int totalBought, double totalSpent, double totalSaved, String mostVisited) {
         this.username = username;
         this.password = password;
         this.age = age;
@@ -39,10 +42,11 @@ public class User {
         this.listFileName = username + "_list.txt";
         this.infoFileName = username + "_info.txt";
 
-        this.shoppingCount = 0;
-        this.totalItemsBought = 0;
-        this.totalMoneySpent = 0.0;
-        this.favoriteStore = "";
+        this.totalVisits = totalVisits;
+        this.totalBought = totalBought;
+        this.totalSpent = totalSpent;
+        this.totalSaved = totalSaved;
+        this.mostVisited = mostVisited;
 
     }
 
@@ -66,30 +70,72 @@ public class User {
         shoppinglist.clear();
     }
 
+    public void setTotalVisits(int totalVisits) {
+        this.totalVisits = totalVisits;
+    }
+
+    public void setTotalBought(int totalBought) {
+        this.totalBought = totalBought;
+    }
+
+    public void setTotalSpent(double totalSpent) {
+        this.totalSpent = totalSpent;
+    }
+
+    public void setTotalSaved(double totalSaved) {
+        this.totalSaved = totalSaved;
+    }
+
+    public void setMostVisited(String mostVisited) {
+        this.mostVisited = mostVisited;
+    }
+
+    public int getTotalVisits() {
+        return totalVisits;
+    }
+
+    public int getTotalBought() {
+        return totalBought;
+    }
+
+    public double getTotalSpent() {
+        return totalSpent;
+    }
+
+    public double getTotalSaved() {
+        return totalSaved;
+    }
+
+    public String getMostVisited() {
+        return mostVisited;
+    }
+
     public ArrayList<String> getShoppinglist() {
         return shoppinglist;
     }
 
-    public int getShoppingCount() {
-        return shoppingCount;
+    public String getPath() {
+        return "data\\userdata\\" + username;
     }
 
-    public int getTotalItemsBought() {
-        return totalItemsBought;
+    public String getInfoFileName() {
+        return username + "_info.txt";
     }
 
-    public double getTotalMoneySpent() {
-        return totalMoneySpent;
-    }
-
-    public String getFavoriteStore() {
-        return favoriteStore;
-    }
+    public File getUserShoppingListFile() {
+        return new File("data/userdata/" + username + "/" + listFileName);
+    };
 
     @Override
     public String toString() {
         return "User: " + username + ", password: " + password + ", age: " + age +
                 ", email: " + email + ", location: " + location;
+    }
+
+    public String userInfoString() {
+        return username + ":" + password + ":" + age + ":" + email + ":" + location + ":" +
+                saastukaart + ":" + partnerkaart + ":" + rimikaart + ":" +
+                totalVisits + ":" + totalBought + ":" + totalSpent + ":" + totalSaved + ":" + mostVisited;
     }
 
 }

@@ -5,10 +5,8 @@ import POC.Product;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.geometry.Side;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -16,29 +14,22 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.math.RoundingMode;
-import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static com.example.GUI.GUIbuttons.*;
+import static com.example.GUI.GUIevents.*;
 
 public class GUI extends Application {
 
-    private static HashMap<String, String> userIDwithPassword = new HashMap<>();
+    static HashMap<String, String> userIDwithPassword = new HashMap<>();
     private static User user;
     private static Scene scene;
     private static ArrayList<HashMap<String, ArrayList<Product>>> result = new ArrayList<>();
@@ -47,6 +38,8 @@ public class GUI extends Application {
     private static int totalProducts = 0;
     private static double totalPrice = 0;
     private static double totalLength = 0.0;
+
+    private static boolean saveTrip = true;
 
     public static void main(String[] args) {
         launch(args);
@@ -63,17 +56,8 @@ public class GUI extends Application {
 
     // <editor-fold desc="Methods">
 
-
-    public static void setScene(Scene scene) {
-        GUI.scene = scene;
-    }
-
     public static Scene getScene() {
         return scene;
-    }
-
-    public static void setUser(User user) {
-        GUI.user = user;
     }
 
     public static HashMap<String, String> updateUserIDwithPassword() {
@@ -90,53 +74,11 @@ public class GUI extends Application {
         return userIDwithPassword.containsKey(username) && userIDwithPassword.get(username).equals(password);
     }
 
-    public static boolean validUsername(String username) {
-        boolean validLength = username.length() >= 3 && username.length() <= 18;
-        boolean validCharacters = username.matches("[A-Za-z0-9]*");
-        boolean doesntAlreadyExist = !userIDwithPassword.containsKey(username);
-        return validLength && validCharacters && doesntAlreadyExist;
-    }
-
-    public static boolean validPassword(String password) {
-        boolean validLength = password.length() >= 3;
-        boolean doesntContainColon = !password.contains(":");
-        return validLength && doesntContainColon;
-    }
-
-    public static boolean validAge(String age) {
-        try {
-            return Integer.parseInt(age) >= 0;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    public static boolean validEmail(String email) {
-        Pattern VALID_EMAIL_ADDRESS_REGEX =
-                Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
-        return matcher.find();
-    }
-
-    public static boolean validCoordinates(String coords) {
-        Pattern regex = Pattern.compile("^(-?\\d+(\\.\\d+)?),\\s*(-?\\d+(\\.\\d+)?)$");
-        Matcher matcher = regex.matcher(coords);
-        return matcher.find();
-    }
-
-    public static void openWebpage(String urlString) {
-        try {
-            Desktop.getDesktop().browse(new URL(urlString).toURI());
-        } catch (Exception e) {
-            System.out.println("failed to open tab: " + e.getClass().getSimpleName());
-        }
-    }
-
     public static void updateInfo(Text products, Text prices) {
         if (totalProducts == 0) totalPrice = 0;
 
         DecimalFormat df = new DecimalFormat("#.##");
-        df.setRoundingMode(RoundingMode.CEILING);
+        df.setRoundingMode(RoundingMode.HALF_EVEN);
 
         products.setText(totalProducts + "");
         prices.setText(df.format(totalPrice) + " €");
@@ -150,54 +92,26 @@ public class GUI extends Application {
 
         Group root = new Group();
 
-        Text loginTitle = new Text("OO");
-        loginTitle.setFont(new Font(28));
-        loginTitle.setX(195);
-        loginTitle.setY(128);
-        root.getChildren().add(loginTitle);
+        root.getChildren().add(text("OO", 28, 195, 128));
+        root.getChildren().add(text("Kasutajanimi", 12, 45, 186));
+        root.getChildren().add(text("Salasõna", 12, 45, 219));
 
-        Text loginUsername = new Text("Kasutajanimi");
-        loginUsername.setX(45);
-        loginUsername.setY(186);
-        root.getChildren().add(loginUsername);
-
-        Text loginPassword = new Text("Salasõna");
-        loginPassword.setX(45);
-        loginPassword.setY(219);
-        root.getChildren().add(loginPassword);
-
-        TextField loginEnterUsername = new TextField();
-        loginEnterUsername.setPrefSize(254, 25);
-        loginEnterUsername.setLayoutX(152);
-        loginEnterUsername.setLayoutY(167);
+        TextField loginEnterUsername = textField("", 254, 25, 152, 167);
         root.getChildren().add(loginEnterUsername);
 
-        PasswordField loginEnterPassword = new PasswordField();
-        loginEnterPassword.setPrefSize(254, 25);
-        loginEnterPassword.setLayoutX(152);
-        loginEnterPassword.setLayoutY(200);
+        PasswordField loginEnterPassword = passwordField("", 254, 25, 152, 200);
         root.getChildren().add(loginEnterPassword);
 
-        Button loginLogIn = new Button("Logi sisse");
-        loginLogIn.setPrefSize(361, 25);
-        loginLogIn.setLayoutX(45);
-        loginLogIn.setLayoutY(275);
-
+        Button loginLogIn = button("Logi sisse", 361, 25, 45, 275);
         loginLogIn.setOnAction(event -> {
             user = login(loginEnterUsername.getText(), loginEnterPassword.getText());
         });
-
         root.getChildren().add(loginLogIn);
 
-        Button loginNoAccount = new Button("Pole kontot? Registreeru");
-        loginNoAccount.setPrefSize(361, 25);
-        loginNoAccount.setLayoutX(45);
-        loginNoAccount.setLayoutY(315);
-
+        Button loginNoAccount = button("Pole kontot? Registreeru", 361, 25, 45, 315);
         loginNoAccount.setOnAction(event -> {
             scene.setRoot(registrationPage());
         });
-
         root.getChildren().add(loginNoAccount);
 
         return root;
@@ -210,140 +124,73 @@ public class GUI extends Application {
 
         Group root = new Group();
 
-        Text regTitle = new Text("Registreeru");
-        regTitle.setFont(new Font(28));
-        regTitle.setX(155);
-        regTitle.setY(70);
-        root.getChildren().add(regTitle);
+        root.getChildren().add(text("Registreeru", 28, 155, 70));
 
-        Text regUsername = new Text("Kasutajanimi");
+        Text regUsername = text("Kasutajanimi", 12, 42, 131);
         regUsername.setUnderline(true);
-        regUsername.setX(42);
-        regUsername.setY(131);
         root.getChildren().add(regUsername);
 
-        Text regPassword = new Text("Salasõna");
+        Text regPassword = text("Salasõna", 12, 42, 162);
         regPassword.setUnderline(true);
-        regPassword.setX(42);
-        regPassword.setY(162);
         root.getChildren().add(regPassword);
 
-        Text regAge = new Text("Vanus");
+        Text regAge = text("Vanus", 12, 42, 193);
         regAge.setUnderline(true);
-        regAge.setX(42);
-        regAge.setY(193);
         root.getChildren().add(regAge);
 
-        TextField regEnterUsername = new TextField();
-        regEnterUsername.setPromptText("4-18 märki, kasuta numbreid ja ladina tähti");
-        regEnterUsername.setPrefSize(250, 25);
-        regEnterUsername.setLayoutX(158);
-        regEnterUsername.setLayoutY(114);
-
+        TextField regEnterUsername = textField("4-18 märki, kasuta numbreid ja ladina tähti", 250, 25, 158, 114);
         regEnterUsername.setOnKeyTyped(event -> {
             regUsername.setUnderline(!validUsername(regEnterUsername.getText()));
         });
 
         root.getChildren().add(regEnterUsername);
 
-        TextField regEnterPassword = new TextField();
-        regEnterPassword.setPromptText("Ei tohi sisaldada märki ':'");
-        regEnterPassword.setPrefSize(250, 25);
-        regEnterPassword.setLayoutX(158);
-        regEnterPassword.setLayoutY(145);
-
+        PasswordField regEnterPassword = passwordField("Ei tohi sisaldada märki ':'", 250, 25, 158, 145);
         regEnterPassword.setOnKeyTyped(event -> {
             regPassword.setUnderline(!validPassword(regEnterPassword.getText()));
         });
-
         root.getChildren().add(regEnterPassword);
 
-        TextField regEnterAge = new TextField();
-        regEnterAge.setPromptText("Sisesta positiivne täisarv");
-        regEnterAge.setPrefSize(250, 25);
-        regEnterAge.setLayoutX(158);
-        regEnterAge.setLayoutY(176);
-
+        TextField regEnterAge = textField("Sisesta positiivne täisarv", 250, 25, 158, 176);
         regEnterAge.setOnKeyTyped(event -> {
             regAge.setUnderline(!validAge(regEnterAge.getText()));
         });
-
         root.getChildren().add(regEnterAge);
 
-        Line regLine = new Line();
-        regLine.setLayoutX(144);
-        regLine.setLayoutY(212);
-        regLine.setStartX(-102);
-        regLine.setEndX(263);
-        root.getChildren().add(regLine);
+        root.getChildren().add(line(144, 212, -102, 263));
+        root.getChildren().add(line(144, 304, -102, 263));
 
-        Text regEmail = new Text("E-mail");
-        regEmail.setUnderline(true);
-        regEmail.setX(42);
-        regEmail.setY(244);
+        Text regEmail = text("E-mail", 12, 42, 244);
         root.getChildren().add(regEmail);
 
-        Text regCoords = new Text("Koordinaadid");
+        Text regCoords = text("Koordinaadid", 12, 42, 271);
         regCoords.setUnderline(true);
-        regCoords.setX(42);
-        regCoords.setY(271);
         root.getChildren().add(regCoords);
 
-        TextField regEnterEmail = new TextField();
-        regEnterEmail.setPrefSize(250, 25);
-        regEnterEmail.setLayoutX(158);
-        regEnterEmail.setLayoutY(227);
-
+        TextField regEnterEmail = textField("", 250, 25, 158, 227);
         regEnterEmail.setOnKeyTyped(event -> {
             regEmail.setUnderline(!validEmail(regEnterEmail.getText()));
         });
-
         root.getChildren().add(regEnterEmail);
 
-        TextField regEnterCoords = new TextField();
-        regEnterCoords.setPromptText("nt kujul 58.3851, 26.7250");
-        regEnterCoords.setPrefSize(250, 25);
-        regEnterCoords.setLayoutX(158);
-        regEnterCoords.setLayoutY(262);
-
+        TextField regEnterCoords = textField("nt kujul 58.3851, 26.7250", 250, 25, 158, 262);
         regEnterCoords.setOnKeyTyped(event -> {
             regCoords.setUnderline(!validCoordinates(regEnterCoords.getText()));
         });
-
         root.getChildren().add(regEnterCoords);
 
-        Line regLineBelow = new Line();
-        regLineBelow.setLayoutX(144);
-        regLineBelow.setLayoutY(304);
-        regLineBelow.setStartX(-102);
-        regLineBelow.setEndX(263);
-        root.getChildren().add(regLineBelow);
+        root.getChildren().add(text("Olemasolevad kliendikaardid", 12, 42, 334));
 
-        Text regCards = new Text("Olemasolevad kliendikaardid");
-        regCards.setX(42);
-        regCards.setY(334);
-        root.getChildren().add(regCards);
-
-        CheckBox regCheckCoop = new CheckBox("Säästukaart (Coop)");
-        regCheckCoop.setLayoutX(48);
-        regCheckCoop.setLayoutY(344);
+        CheckBox regCheckCoop = checkbox("Säästukaart (Coop)", 48, 344, false);
         root.getChildren().add(regCheckCoop);
 
-        CheckBox regCheckSelver = new CheckBox("Partnerkaart (Selver)");
-        regCheckSelver.setLayoutX(48);
-        regCheckSelver.setLayoutY(369);
+        CheckBox regCheckSelver = checkbox("Partnerkaart (Selver)", 48, 369, false);
         root.getChildren().add(regCheckSelver);
 
-        CheckBox regCheckRimi = new CheckBox("Rimi kaart (Rimi)");
-        regCheckRimi.setLayoutX(48);
-        regCheckRimi.setLayoutY(394);
+        CheckBox regCheckRimi = checkbox("Rimi kaart (Rimi)", 48, 394, false);
         root.getChildren().add(regCheckRimi);
 
-        Button regButtonRegister = new Button("Registreeru");
-        regButtonRegister.setPrefSize(189, 98);
-        regButtonRegister.setLayoutX(216);
-        regButtonRegister.setLayoutY(318);
-
+        Button regButtonRegister = button("Registreeru", 189, 98, 216, 318);
         regButtonRegister.setOnAction(event -> {
 
             userIDwithPassword = updateUserIDwithPassword();
@@ -363,38 +210,21 @@ public class GUI extends Application {
                         regEnterEmail.getText(), regEnterCoords.getText(), regCheckCoop.isSelected(),
                         regCheckSelver.isSelected(), regCheckRimi.isSelected());
 
-
-                Alert success = new Alert(Alert.AlertType.INFORMATION);
-                success.setTitle("Kasutaja registreeritud");
-                success.setHeaderText("Kasutaja " + regEnterUsername.getText() + " edukalt registreeritud");
-                success.setContentText("Võite sisse logida");
-                success.showAndWait();
-
+                alertRegistrationSuccess(regEnterUsername.getText());
                 scene.setRoot(loginPage());
 
             }
 
-            else {
-                Alert fail = new Alert(Alert.AlertType.ERROR);
-                fail.setTitle("Registreerumine ebaõnnestus");
-                fail.setHeaderText("Registreerumine ebaõnnestus, vaata üle allajoonitud väljad.");
-                fail.showAndWait();
-            }
-
+            else alertRegistrationFailure();
 
         });
 
         root.getChildren().add(regButtonRegister);
 
-        Button regButtonGoBack = new Button("Mine tagasi");
-        regButtonGoBack.setPrefSize(366, 25);
-        regButtonGoBack.setLayoutX(41);
-        regButtonGoBack.setLayoutY(429);
-
+        Button regButtonGoBack = button("Mine tagasi", 366, 25, 41, 429);
         regButtonGoBack.setOnAction(event -> {
             scene.setRoot(loginPage());
         });
-
         root.getChildren().add(regButtonGoBack);
 
         return root;
@@ -405,102 +235,63 @@ public class GUI extends Application {
 
         Group root = new Group();
 
-        Text mainWelcome = new Text("Tere tulemast!");
-        mainWelcome.setFont(new Font(28));
-        mainWelcome.setX(136);
-        mainWelcome.setY(72);
-        root.getChildren().add(mainWelcome);
+        root.getChildren().add(text("Tere tulemast!", 28, 136, 72));
+        root.getChildren().add(text("Mida soovid teha?", 16, 159, 124));
 
-        Text mainPrompt = new Text("Mida soovid teha?");
-        mainPrompt.setFont(new Font(16));
-        mainPrompt.setX(159);
-        mainPrompt.setY(124);
-        root.getChildren().add(mainPrompt);
-
-        Button mainChangeList = new Button("Muuda ostunimekirja");
+        Button mainChangeList = button("Muuda ostunimekirja", 266, 39, 91, 156);
         mainChangeList.setFont(new Font(18));
-        mainChangeList.setPrefSize(266, 39);
-        mainChangeList.setLayoutX(91);
-        mainChangeList.setLayoutY(156);
-
         mainChangeList.setOnAction(event -> {
             scene.setRoot(menuChangeList());
         });
-
         root.getChildren().add(mainChangeList);
 
-        Button mainGoShopping = new Button("Mine ostlema");
+        Button mainGoShopping = button("Mine ostlema", 266, 39, 91, 205);
         mainGoShopping.setFont(new Font(18));
-        mainGoShopping.setPrefSize(266, 39);
-        mainGoShopping.setLayoutX(91);
-        mainGoShopping.setLayoutY(205);
-
         mainGoShopping.setOnAction(event -> {
             scene.setRoot(menuGoShopping());
         });
-
         root.getChildren().add(mainGoShopping);
 
-        Button mainCalculatePath = new Button("Arvuta tee");
+        Button mainCalculatePath = button("Arvuta tee", 266, 39, 91, 254);
         mainCalculatePath.setFont(new Font(18));
-        mainCalculatePath.setPrefSize(266, 39);
-        mainCalculatePath.setLayoutX(91);
-        mainCalculatePath.setLayoutY(254);
         root.getChildren().add(mainCalculatePath);
 
-        Line line = new Line();
-        line.setLayoutX(122);
-        line.setLayoutY(304);
-        line.setStartX(-30);
-        line.setEndX(236);
-        root.getChildren().add(line);
+        root.getChildren().add(line(122, 304, -30, 236));
 
-        Button mainViewProfile = new Button("Kuva profiil");
+        Button mainViewProfile = button("Kuva profiil", 266, 39, 91, 316);
         mainViewProfile.setFont(new Font(18));
-        mainViewProfile.setPrefSize(266, 39);
-        mainViewProfile.setLayoutX(91);
-        mainViewProfile.setLayoutY(316);
-
         mainViewProfile.setOnAction(event -> {
             scene.setRoot(menuViewProfile());
         });
-
         root.getChildren().add(mainViewProfile);
 
-        Button mainViewHistory = new Button("Kuva ostuajalugu");
+        Button mainViewHistory = button("Kuva ostuajalugu", 266, 39, 91, 365);
         mainViewHistory.setFont(new Font(18));
-        mainViewHistory.setPrefSize(266, 39);
-        mainViewHistory.setLayoutX(91);
-        mainViewHistory.setLayoutY(365);
         root.getChildren().add(mainViewHistory);
 
-        Button mainFriends = new Button("Halda sõpru");
+        Button mainFriends = button("Halda sõpru", 266, 39, 91, 414);
         mainFriends.setFont(new Font(18));
-        mainFriends.setPrefSize(266, 39);
-        mainFriends.setLayoutX(91);
-        mainFriends.setLayoutY(414);
         root.getChildren().add(mainFriends);
 
-        Button mainLogOut = new Button("Logi välja");
+        Button mainLogOut = button("Logi välja", 266, 39, 91, 463);
         mainLogOut.setFont(new Font(18));
-        mainLogOut.setPrefSize(266, 39);
-        mainLogOut.setLayoutX(91);
-        mainLogOut.setLayoutY(463);
-
         mainLogOut.setOnAction(event -> {
 
             Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
             confirm.setTitle("Logi välja");
             confirm.setHeaderText("Kas soovite välja logida?");
 
-            Optional<ButtonType> result = confirm.showAndWait();
+            Optional<ButtonType> buttonResult = confirm.showAndWait();
+            if (buttonResult.isPresent() && buttonResult.get() == ButtonType.OK) {
 
-            if (result.isPresent() && result.get() == ButtonType.OK) {
+                try {
+                    Files.write(Path.of(user.getPath() + "\\" + user.getInfoFileName()), user.userInfoString().getBytes());
+                } catch (IOException ignored) {}
+
+                user = null;
                 scene.setRoot(loginPage());
-                Alert loggedout = new Alert(Alert.AlertType.INFORMATION);
-                loggedout.setTitle("Välja logitud");
-                loggedout.setHeaderText("Edukalt välja logitud, kena päeva jätku!");
-                loggedout.showAndWait();
+                alertLogOutSuccess();
+
             } else {
                 confirm.close();
             }
@@ -517,21 +308,9 @@ public class GUI extends Application {
 
         Group root = new Group();
 
-        Text title = new Text("Ostunimekiri");
-        title.setFont(new Font(28));
-        title.setX(146);
-        title.setY(60);
-        root.getChildren().add(title);
-
-        Text infoPrompt1 = new Text("Sisesta siia tooted, mida soovid otsida");
-        infoPrompt1.setX(120);
-        infoPrompt1.setY(87);
-        root.getChildren().add(infoPrompt1);
-
-        Text infoPrompt2 = new Text("Iga toode eraldi reale");
-        infoPrompt2.setX(167);
-        infoPrompt2.setY(104);
-        root.getChildren().add(infoPrompt2);
+        root.getChildren().add(text("Ostunimekiri", 28, 146, 60));
+        root.getChildren().add(text("Sisesta siia tooted, mida soovid otsida", 12, 120, 87));
+        root.getChildren().add(text("Iga toode eraldi reale", 12, 167, 104));
 
         TextArea listArea = new TextArea();
         listArea.setFont(new Font(22));
@@ -540,81 +319,25 @@ public class GUI extends Application {
         listArea.setLayoutY(134);
         root.getChildren().add(listArea);
 
-        Button loadFromFile = new Button("Lae varasem ostunimekiri failist");
-        loadFromFile.setPrefSize(358, 25);
-        loadFromFile.setLayoutX(46);
-        loadFromFile.setLayoutY(469);
-
+        Button loadFromFile = button("Lae varasem ostunimekiri failist", 358, 25, 46, 469);
         loadFromFile.setOnAction(event -> {
-
-            File userList = new File("data/userdata/" + user.getUsername() + "/" + user.getListFileName());
-            listArea.setText("");
-
-            try (Scanner scan = new Scanner(new FileInputStream(userList))) {
-                while (scan.hasNextLine()) {
-                    String item = scan.nextLine();
-                    listArea.appendText(item + "\n");
-                }
-            } catch (Exception e) {
-                System.out.println("Exception " + e.getClass().getSimpleName());
-            }
-
+            updateListArea(user.getUserShoppingListFile(), listArea);
         });
-
         root.getChildren().add(loadFromFile);
 
-        Button saveToFile = new Button("Salvesta faili");
-        saveToFile.setPrefSize(170, 25);
-        saveToFile.setLayoutX(46);
-        saveToFile.setLayoutY(502);
-
+        Button saveToFile = button("Salvesta faili", 170, 25, 46, 502);
         saveToFile.setOnAction(event -> {
-
-            String enteredText = listArea.getText();
-            String[] items = enteredText.split("\n");
-
-            File userList = new File("data/userdata/" + user.getUsername() + "/" + user.getListFileName());
-
-            try (FileOutputStream fos = new FileOutputStream(userList)) {
-                for (String item : items) {
-                    fos.write(item.getBytes());
-                    fos.write("\n".getBytes());
-                }
-            } catch (Exception e) {
-                System.out.println("exc");
-            }
-
-            Alert success = new Alert(Alert.AlertType.INFORMATION);
-            success.setTitle("Salvestatud");
-            success.setHeaderText("Ostunimekiri salvestatud");
-            success.showAndWait();
-
+            saveListArea(listArea, user.getUserShoppingListFile());
+            alertSavedListSuccess();
         });
-
         root.getChildren().add(saveToFile);
 
-        Button backToMain = new Button("Tagasi menüüsse");
-        backToMain.setPrefSize(170, 25);
-        backToMain.setLayoutX(234);
-        backToMain.setLayoutY(502);
-
+        Button backToMain = button("Tagasi menüüsse", 170, 25, 234, 502);
         backToMain.setOnAction(event -> {
-
-            File userList = new File("data/userdata/" + user.getUsername() + "/" + user.getListFileName());
-
-            try (Scanner scan = new Scanner(new FileInputStream(userList))) {
-                user.clearList();
-                while (scan.hasNextLine()) {
-                    String item = scan.nextLine();
-                    user.addToList(item);
-                }
-                scene.setRoot(mainMenuPage());
-            } catch (Exception e) {
-                System.out.println("[Exception] clickButtonOstunimekiriMineTagasi " + e.getClass().getSimpleName());
-            }
-
+            user.clearList();
+            readListFromUserFile(user.getUserShoppingListFile(), user.getShoppinglist());
+            scene.setRoot(mainMenuPage());
         });
-
         root.getChildren().add(backToMain);
 
         return root;
@@ -625,120 +348,51 @@ public class GUI extends Application {
 
         Group root = new Group();
 
-        Text title = new Text("Seadistused");
-        title.setFont(new Font(28));
-        title.setX(151);
-        title.setY(88);
-        root.getChildren().add(title);
+        root.getChildren().add(text("Seadistused", 28, 151, 88));
+        root.getChildren().add(text("Otsi poodidest", 20, 160, 171));
 
-        Text selectSearchFrom = new Text("Otsi poodidest");
-        selectSearchFrom.setFont(new Font(20));
-        selectSearchFrom.setX(160);
-        selectSearchFrom.setY(171);
-        root.getChildren().add(selectSearchFrom);
-
-        CheckBox checkCoop = new CheckBox();
-        checkCoop.setFont(new Font(18));
-        checkCoop.setPrefSize(26, 27);
-        checkCoop.setLayoutX(59);
-        checkCoop.setLayoutY(195);
+        CheckBox checkCoop = checkbox("", 59, 195, true);
         root.getChildren().add(checkCoop);
+        root.getChildren().add(text("Coop", 12, 60, 247));
 
-        Text labelCoop = new Text("Coop");
-        labelCoop.setX(57);
-        labelCoop.setY(245);
-        root.getChildren().add(labelCoop);
-
-        CheckBox checkMaxima = new CheckBox();
-        checkMaxima.setFont(new Font(18));
-        checkMaxima.setPrefSize(26, 27);
-        checkMaxima.setLayoutX(134);
-        checkMaxima.setLayoutY(195);
+        CheckBox checkMaxima = checkbox("", 134, 195, true);
         root.getChildren().add(checkMaxima);
+        root.getChildren().add(text("Maxima", 12, 130, 247));
 
-        Text labelMaxima = new Text("Maxima");
-        labelMaxima.setX(127);
-        labelMaxima.setY(245);
-        root.getChildren().add(labelMaxima);
-
-        CheckBox checkPrisma = new CheckBox();
-        checkPrisma.setFont(new Font(18));
-        checkPrisma.setPrefSize(26, 27);
-        checkPrisma.setLayoutX(209);
-        checkPrisma.setLayoutY(195);
+        CheckBox checkPrisma = checkbox("", 209, 195, true);
         root.getChildren().add(checkPrisma);
+        root.getChildren().add(text("Prisma", 12, 207, 247));
 
-        Text labelPrisma = new Text("Prisma");
-        labelPrisma.setX(205);
-        labelPrisma.setY(245);
-        root.getChildren().add(labelPrisma);
-
-        CheckBox checkRimi = new CheckBox();
-        checkRimi.setFont(new Font(18));
-        checkRimi.setPrefSize(26, 27);
-        checkRimi.setLayoutX(284);
-        checkRimi.setLayoutY(195);
+        CheckBox checkRimi = checkbox("", 284, 195, true);
         root.getChildren().add(checkRimi);
+        root.getChildren().add(text("Rimi", 12, 288, 247));
 
-        Text labelRimi = new Text("Rimi");
-        labelRimi.setX(285);
-        labelRimi.setY(245);
-        root.getChildren().add(labelRimi);
-
-        CheckBox checkSelver = new CheckBox();
-        checkSelver.setFont(new Font(18));
-        checkSelver.setPrefSize(26, 27);
-        checkSelver.setLayoutX(359);
-        checkSelver.setLayoutY(195);
+        CheckBox checkSelver = checkbox("", 359, 195, true);
         root.getChildren().add(checkSelver);
+        root.getChildren().add(text("Selver", 12, 359, 247));
 
-        Text labelSelver = new Text("Selver");
-        labelSelver.setX(356);
-        labelSelver.setY(245);
-        root.getChildren().add(labelSelver);
-
-        // TODO: search by coordinates if reserved button remains unused
-
-        Button beginSearch = new Button("OTSI");
+        Button beginSearch = button("OTSI", 346, 60, 53, 421);
         beginSearch.setFont(new Font(28));
-        beginSearch.setPrefSize(346, 60);
-        beginSearch.setLayoutX(53);
-        beginSearch.setLayoutY(421);
-
         beginSearch.setOnAction(event -> {
+            System.out.println("Begin search..");
 
             purchased.clear();
-
-            System.out.println("Begin search ...");
-
-            File userList = new File("data/userdata/" + user.getUsername() + "/" + user.getListFileName());
-
-            try (Scanner scan = new Scanner(new FileInputStream(userList))) {
-                user.clearList();
-                while (scan.hasNextLine()) {
-                    String item = scan.nextLine();
-                    user.addToList(item);
-                }
-            } catch (FileNotFoundException ignored) {}
+            user.clearList();
+            readListFromUserFile(user.getUserShoppingListFile(), user.getShoppinglist());
 
             result = beginSearch(user.getShoppinglist(), checkCoop.isSelected(), checkMaxima.isSelected(),
                     checkPrisma.isSelected(), checkRimi.isSelected(), checkSelver.isSelected());
 
             scene.setRoot(shoppingScene());
 
+            System.out.println("End search..");
         });
-
         root.getChildren().add(beginSearch);
 
-        Button goBack = new Button("Mine tagasi");
-        goBack.setPrefSize(107, 25);
-        goBack.setLayoutX(169);
-        goBack.setLayoutY(491);
-
+        Button goBack = button("Mine tagasi", 107, 25, 169, 491);
         goBack.setOnAction(event -> {
             scene.setRoot(mainMenuPage());
         });
-
         root.getChildren().add(goBack);
 
         return root;
@@ -753,80 +407,49 @@ public class GUI extends Application {
         tabPane.setSide(Side.TOP);
         tabPane.setPrefSize(450, 550);
 
-        Tab kuva = new Tab("Kuva");
+        Tab kuva = new Tab("  Kuva  ");
         kuva.setClosable(false);
         AnchorPane kuvaTab = new AnchorPane();
 
-            ScrollPane addedProducts = new ScrollPane();
-            addedProducts.setPrefSize(420, 387);
-            addedProducts.setLayoutX(14);
-            addedProducts.setLayoutY(14);
+            ScrollPane addedProducts = scrollpane(420, 387, 14, 14);
             kuvaTab.getChildren().add(addedProducts);
 
             VBox vbox2 = new VBox();
             addedProducts.setContent(vbox2);
 
-            Text totalProductsInfo = new Text("Tooteid kokku: ");
-            totalProductsInfo.setFont(new Font(16));
-            totalProductsInfo.setX(25);
-            totalProductsInfo.setY(430);
-            kuvaTab.getChildren().add(totalProductsInfo);
+            kuvaTab.getChildren().add(text("Tooteid kokku: ", 16, 25, 430));
+            kuvaTab.getChildren().add(text("Hind kokku: ", 16, 25, 455));
+            kuvaTab.getChildren().add(text("Lühim tee: ", 16, 25, 480));
 
-            Text totalProductsCount = new Text(String.valueOf(totalProducts));
-            totalProductsCount.setFont(new Font(16));
-            totalProductsCount.setX(160);
-            totalProductsCount.setY(430);
+            Text totalProductsCount = text(String.valueOf(totalProducts), 16, 160, 430);
             kuvaTab.getChildren().add(totalProductsCount);
 
-            Text totalPriceInfo = new Text("Hind kokku: ");
-            totalPriceInfo.setFont(new Font(16));
-            totalPriceInfo.setX(25);
-            totalPriceInfo.setY(455);
-            kuvaTab.getChildren().add(totalPriceInfo);
-
-            Text totalPriceCount = new Text(totalPrice + " €");
-            totalPriceCount.setFont(new Font(16));
-            totalPriceCount.setX(160);
-            totalPriceCount.setY(455);
+            Text totalPriceCount = text(totalPrice + " €", 16, 160, 455);
             kuvaTab.getChildren().add(totalPriceCount);
 
-            Text totalLengthInfo = new Text("Lühim tee: ");
-            totalLengthInfo.setFont(new Font(16));
-            totalLengthInfo.setX(25);
-            totalLengthInfo.setY(480);
-            kuvaTab.getChildren().add(totalLengthInfo);
-
-            Text totalLengthCount = new Text(totalLength + " km");
-            totalLengthCount.setFont(new Font(16));
-            totalLengthCount.setX(160);
-            totalLengthCount.setY(480);
+            Text totalLengthCount = text(totalLength + " km", 16, 160, 480);
             kuvaTab.getChildren().add(totalLengthCount);
 
         kuva.setContent(kuvaTab);
 
         // ----
 
-        Tab vali = new Tab("Vali");
+        Tab vali = new Tab("  Vali  ");
         vali.setClosable(false);
         AnchorPane valiTab = new AnchorPane();
 
-            ScrollPane scrollPane = new ScrollPane();
-            scrollPane.setPrefSize(420, 387);
-            scrollPane.setLayoutX(14);
-            scrollPane.setLayoutY(14);
-            valiTab.getChildren().add(scrollPane);
+            ScrollPane allProducts = scrollpane(420, 387, 14, 14);
+            valiTab.getChildren().add(allProducts);
 
             VBox vbox = new VBox();
 
-            Text preShopInfo = new Text("\n\n\n\n\n\n\n\n\n                 Vali rippmenüüst toode. Erinevad valikud ilmuvad siia kasti.");
+            Text preShopInfo = new Text("\n\n\n\n\n\n\n\n\n                 " +
+                    "Vali rippmenüüst toode. Erinevad valikud ilmuvad siia kasti.");
             vbox.getChildren().add(preShopInfo);
 
-            scrollPane.setContent(vbox);
+            allProducts.setContent(vbox);
 
-            Text toode = new Text("Toode");
-            toode.setLayoutX(24);
-            toode.setLayoutY(427);
-            valiTab.getChildren().add(toode);
+            valiTab.getChildren().add(text("Toode", 12, 24, 427));
 
             ChoiceBox<String> dropdown = new ChoiceBox<>();
             dropdown.setPrefSize(225, 25);
@@ -836,61 +459,28 @@ public class GUI extends Application {
             dropdown.setItems(dropdownItems);
 
             dropdown.setOnAction(event -> {
+
                 vbox.getChildren().clear();
-
                 String selected = dropdown.getValue();
-
                 HashMap<String, ArrayList<Product>> products = result.get(user.getShoppinglist().indexOf(selected));
-
                 Collections.sort(products.get(selected));
 
                 for (Product product : products.get(selected)) {
 
-                    Pane pane = new Pane();
-                    pane.setPrefSize(402, 100);
-                    pane.setPadding(new Insets(20, 10, 20, 10));
-                    pane.setBorder(new Border(new BorderStroke(Color.LIGHTGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3,4,3,4))));
+                    Pane pane = pane(402, 100);
 
                     String productNameString = product.getName();
-
                     if (productNameString.length() > 50) productNameString = productNameString.substring(0, 50) + "...";
 
-                    Text productName = new Text(productNameString);
-                    productName.setX(103);
-                    productName.setY(27);
+                    Text productName = text(productNameString, 12, 103, 27);
+                    Text productStore = text(product.getStore(), 12, 103, 82);
 
-                    Text productStore = new Text(product.getStore());
-                    productStore.setX(103);
-                    productStore.setY(82);
-
-                    Text productPrice = new Text();
-
+                    Text productPrice;
                     if (product.getDiscountType() != DiscountType.noDiscount) {
-                        productPrice.setText(product.getPreSalePrice() + " €");
-                        productPrice.setStrikethrough(true);
-                        productPrice.setFill(Color.GRAY);
-                        productPrice.setFont(new Font(14));
-                        productPrice.setX(170);
-                        productPrice.setY(58);
-
-                        Text discountPrice = new Text(product.getPrice() + " €");
-
-                        discountPrice.setFill(Color.RED);
-                        if (product.getDiscountType() == DiscountType.discountCard) discountPrice.setFill(Color.ORANGE);
-
-                        discountPrice.setFont(new Font(20));
-                        discountPrice.setX(103);
-                        discountPrice.setY(58);
-
+                        productPrice = displayOldPrice(product);
+                        Text discountPrice = displayDiscountPrice(product);
                         pane.getChildren().add(discountPrice);
-                    }
-
-                    else {
-                        productPrice.setText(product.getPrice() + " €");
-                        productPrice.setFont(new Font(20));
-                        productPrice.setX(103);
-                        productPrice.setY(58);
-                    }
+                    } else productPrice = displayPrice(product);
 
                     /*
                     Image image = product.getImage(); // new Image(product.getImgURL(), 90, 90, true, false);
@@ -901,13 +491,49 @@ public class GUI extends Application {
                     imgView.prefWidth(90);
                     */
 
-                    Button addTo = new Button("Lisa korvi");
+                    Button addTo = button("Lisa korvi", 70, 25, 320, 64);
+                    Button removeFrom = button("Eemalda", 70, 25, 320, 64);
 
-                    Button minus = new Button("-");
-                    minus.setPrefSize(27, 8);
-                    minus.setLayoutX(291);
-                    minus.setLayoutY(64);
+                    Button plus = button("+", 27, 8, 264, 64);
+                    Button minus = button("-", 27, 8, 291, 64);
                     minus.setDisable(true);
+
+                    Button moreInfo = button("Lisainfo", 70, 25, 320, 34);
+                    moreInfo.setOnAction(e -> {
+                        openWebpage(product.getLink());
+                    });
+
+
+                    Text amount = text("Kogus: 1", 12, 202, 82);
+
+                    plus.setOnAction(p -> {
+                        int howMany = productCount(amount) + 1;
+                        amount.setText("Kogus: " + howMany);
+
+                        if (howMany <= 1) minus.setDisable(true);
+                        else minus.setDisable(false);
+
+                        purchased.put(product, purchased.get(product) + 1);
+                        totalPrice += product.getPrice();
+                        totalProducts += 1;
+                        updateInfo(totalProductsCount, totalPriceCount);
+
+                    });
+
+                    minus.setOnAction(m -> {
+                        int mitu = productCount(amount) - 1;
+
+                        if (mitu <= 1) minus.setDisable(true);
+                        else minus.setDisable(false);
+
+                        amount.setText("Kogus: " + mitu);
+                        purchased.put(product, purchased.get(product) - 1);
+
+                        totalPrice -= product.getPrice();
+                        totalProducts -= 1;
+                        updateInfo(totalProductsCount, totalPriceCount);
+
+                    });
 
                     addTo.setOnAction(e -> {
 
@@ -922,91 +548,35 @@ public class GUI extends Application {
                             vbox2.getChildren().add(pane);
                             pane.getChildren().remove(addTo);
 
-                            Button removeFrom = new Button("Eemalda");
-                            removeFrom.setPrefSize(70, 25);
-                            removeFrom.setLayoutX(320);
-                            removeFrom.setLayoutY(64);
-
-                            Text amount = new Text("Kogus: 1");
-                            amount.setX(202);
-                            amount.setY(82);
-
-                            Button plus = new Button("+");
-                            plus.setPrefSize(27, 8);
-                            plus.setLayoutX(264);
-                            plus.setLayoutY(64);
-
-                            plus.setOnAction(p -> {
-                                int mitu = Integer.parseInt(amount.getText().split(" ")[1]) + 1;
-                                amount.setText("Kogus: " + mitu);
-
-                                if (mitu <= 1) minus.setDisable(true);
-                                else minus.setDisable(false);
-
-                                purchased.put(product, purchased.get(product) + 1);
-                                totalPrice += product.getPrice();
-                                totalProducts += 1;
-                                updateInfo(totalProductsCount, totalPriceCount);
-
-                            });
-
-                            minus.setOnAction(m -> {
-                                int mitu = Integer.parseInt(amount.getText().split(" ")[1]) - 1;
-
-                                if (mitu <= 1) minus.setDisable(true);
-                                else minus.setDisable(false);
-
-                                amount.setText("Kogus: " + mitu);
-                                purchased.put(product, purchased.get(product) - 1);
-
-                                totalPrice -= product.getPrice();
-                                totalProducts -= 1;
-                                updateInfo(totalProductsCount, totalPriceCount);
-
-                            });
-
                             pane.getChildren().add(removeFrom);
                             pane.getChildren().add(amount);
                             pane.getChildren().add(plus);
                             pane.getChildren().add(minus);
 
-                            removeFrom.setOnAction(f -> {
-
-                                int mitu = Integer.parseInt(amount.getText().split(" ")[1]);
-
-                                purchased.remove(product);
-                                totalPrice -= product.getPrice() * mitu;
-                                totalProducts -= mitu;
-                                updateInfo(totalProductsCount, totalPriceCount);
-
-                                vbox.getChildren().add(pane);
-                                vbox2.getChildren().remove(pane);
-
-                                pane.getChildren().remove(removeFrom);
-                                pane.getChildren().remove(amount);
-                                pane.getChildren().remove(plus);
-                                pane.getChildren().remove(minus);
-
-                                pane.getChildren().add(addTo);
-                            });
-
                         } else System.out.println("juba olemas");
 
                     });
 
-                    addTo.setPrefSize(70, 25);
-                    addTo.setLayoutX(320);
-                    addTo.setLayoutY(64);
+                    removeFrom.setOnAction(f -> {
 
-                    Button moreInfo = new Button("Lisainfo ");
+                        int mitu = productCount(amount);
 
-                    moreInfo.setOnAction(e -> {
-                        openWebpage(product.getLink());
+                        purchased.remove(product);
+                        totalPrice -= product.getPrice() * mitu;
+                        totalProducts -= mitu;
+                        updateInfo(totalProductsCount, totalPriceCount);
+
+                        vbox.getChildren().add(pane);
+                        vbox2.getChildren().remove(pane);
+
+                        pane.getChildren().remove(removeFrom);
+                        pane.getChildren().remove(amount);
+                        pane.getChildren().remove(plus);
+                        pane.getChildren().remove(minus);
+
+                        pane.getChildren().add(addTo);
+
                     });
-
-                    moreInfo.setPrefSize(70, 25);
-                    moreInfo.setLayoutX(320);
-                    moreInfo.setLayoutY(34);
 
                     pane.getChildren().add(productName);
                     pane.getChildren().add(productStore);
@@ -1014,6 +584,7 @@ public class GUI extends Application {
                     // pane.getChildren().add(imgView);
                     pane.getChildren().add(addTo);
                     pane.getChildren().add(moreInfo);
+
                     vbox.getChildren().add(pane);
 
                 }
@@ -1022,6 +593,7 @@ public class GUI extends Application {
 
             valiTab.getChildren().add(dropdown);
 
+            /* TODO
             Button eelmine = new Button("Eelmine");
             eelmine.setLayoutX(304);
             eelmine.setLayoutY(408);
@@ -1031,22 +603,12 @@ public class GUI extends Application {
             jargmine.setLayoutX(370);
             jargmine.setLayoutY(408);
             valiTab.getChildren().add(jargmine);
+            */
 
-            Button lopeta = new Button("Lõpeta");
-            lopeta.setPrefSize(80, 80);
-            lopeta.setLayoutX(355);
-            lopeta.setLayoutY(410);
-
+            Button lopeta = button("Lõpeta", 80, 80, 355, 410);
             lopeta.setOnAction(event -> {
-
-                for (Product product : purchased.keySet()) {
-                    System.out.println(purchased.get(product) + " " + product.toString());
-                }
-
-                System.out.println("KOKKU: " + totalPrice);
-
+                scene.setRoot(shoppingComplete());
             });
-
             kuvaTab.getChildren().add(lopeta);
 
         vali.setContent(valiTab);
@@ -1061,96 +623,142 @@ public class GUI extends Application {
 
     private static Group menuViewProfile() {
 
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.HALF_EVEN);
+
         Group root = new Group();
 
-        Text title = new Text("Profiil");
-        title.setFont(new Font(28));
-        title.setX(190);
-        title.setY(84);
-        root.getChildren().add(title);
+        root.getChildren().add(text("Profiil", 28, 190, 84));
+        root.getChildren().add(text("Ostukordi kokku: ", 18, 57, 147));
+        root.getChildren().add(text("Kokku tooteid ostetud: ", 18, 57, 211));
+        root.getChildren().add(text("Kokku raha kulutatud: ", 18, 57, 278));
+        root.getChildren().add(text("Kokku raha säästetud: ", 18, 57, 346));
+        root.getChildren().add(text("Kõige rohkem külastatud: ", 18, 57, 410));
 
-        Text vpTotalText = new Text("Ostukordi kokku: ");
-        vpTotalText.setFont(new Font(18));
-        vpTotalText.setX(57);
-        vpTotalText.setY(147);
-        root.getChildren().add(vpTotalText);
-
-        Text vpBoughtText = new Text("Kokku tooteid ostetud: ");
-        vpBoughtText.setFont(new Font(18));
-        vpBoughtText.setX(57);
-        vpBoughtText.setY(211);
-        root.getChildren().add(vpBoughtText);
-
-        Text vpSpentText = new Text("Kokku raha kulutatud: ");
-        vpSpentText.setFont(new Font(18));
-        vpSpentText.setX(57);
-        vpSpentText.setY(278);
-        root.getChildren().add(vpSpentText);
-
-        Text vpSavedText = new Text("Kokku raha säästetud: ");
-        vpSavedText.setFont(new Font(18));
-        vpSavedText.setX(57);
-        vpSavedText.setY(346);
-        root.getChildren().add(vpSavedText);
-
-        Text vpVisitedText = new Text("Kõige rohkem külastatud: ");
-        vpVisitedText.setFont(new Font(18));
-        vpVisitedText.setX(57);
-        vpVisitedText.setY(410);
-        root.getChildren().add(vpVisitedText);
-
-        Text vpTotal = new Text("0");
-        vpTotal.setFont(new Font(18));
-        vpTotal.setX(330);
-        vpTotal.setY(147);
+        // ---
+        Text vpTotal = text(user.getTotalVisits() + "", 18, 330, 147);
         root.getChildren().add(vpTotal);
 
-        Text vpBought = new Text("0");
-        vpBought.setFont(new Font(18));
-        vpBought.setX(330);
-        vpBought.setY(211);
+        Text vpBought = text(df.format(user.getTotalBought()) + " tk", 18, 330, 211);
         root.getChildren().add(vpBought);
 
-        Text vpSpent = new Text("0");
-        vpSpent.setFont(new Font(18));
-        vpSpent.setX(330);
-        vpSpent.setY(278);
+        Text vpSpent = text(df.format(user.getTotalSpent()) + " €", 18, 330, 278);
         root.getChildren().add(vpSpent);
 
-        Text vpSaved = new Text("0");
-        vpSaved.setFont(new Font(18));
-        vpSaved.setX(330);
-        vpSaved.setY(346);
+        Text vpSaved = text(df.format(user.getTotalSaved()) + " €", 18, 330, 346);
         root.getChildren().add(vpSaved);
 
-        Text vpVisited = new Text("0");
-        vpVisited.setFont(new Font(18));
-        vpVisited.setX(330);
-        vpVisited.setY(410);
+        Text vpVisited = text(user.getMostVisited(), 18, 330, 410);
         root.getChildren().add(vpVisited);
+        // ---
 
-        Button vpDelete = new Button("Kustuta andmed");
-        vpDelete.setPrefSize(173, 25);
-        vpDelete.setLayoutX(48);
-        vpDelete.setLayoutY(472);
+        Button vpDelete = button("Kustuta andmed", 173, 25, 49, 472);
         root.getChildren().add(vpDelete);
 
-        Button vpSummary = new Button("Kokkuvõte");
-        vpSummary.setPrefSize(173, 25);
-        vpSummary.setLayoutX(230);
-        vpSummary.setLayoutY(472);
+        Button vpSummary = button("Kokkuvõte", 173, 25, 230, 472);
         root.getChildren().add(vpSummary);
 
-        Button vpGoBack = new Button("Mine tagasi");
-        vpGoBack.setPrefSize(356, 25);
-        vpGoBack.setLayoutX(48);
-        vpGoBack.setLayoutY(504);
-
+        Button vpGoBack = button("Mine tagasi", 356, 25, 48, 504);
         vpGoBack.setOnAction(e -> {
             scene.setRoot(mainMenuPage());
         });
-
         root.getChildren().add(vpGoBack);
+
+        return root;
+
+    }
+
+    private static Group shoppingComplete() {
+
+        Group root = new Group();
+
+        ScrollPane scScrollPane = scrollpane(387, 200, 32, 150);
+        VBox vbox = new VBox();
+        scScrollPane.setContent(vbox);
+
+        for (Product product : purchased.keySet()) {
+
+            Pane pane = pane(370, 75);
+
+            Text amount = text(purchased.get(product) + "tk", 16, 14, 43);
+            pane.getChildren().add(amount);
+
+            String productNameString = product.getName();
+
+            Text name = text(productNameString, 12, 54, 43);
+            name.setWrappingWidth(210);
+            pane.getChildren().add(name);
+
+            Text price = text(product.getPrice() + " €", 16, 268, 43);
+            pane.getChildren().add(price);
+
+            Button info = button("Info", 42, 25, 320, 25);
+            info.setOnAction(e -> {
+                openWebpage(product.getLink());
+            });
+            pane.getChildren().add(info);
+
+            vbox.getChildren().add(pane);
+
+        }
+
+        root.getChildren().add(scScrollPane);
+
+        root.getChildren().add(text("Kokkuvõte", 28, 155, 95));
+        root.getChildren().add(text("Tooteid: ", 18, 32, 141));
+        root.getChildren().add(text("Kokku: ", 18, 298, 141));
+        root.getChildren().add(text("Teekond: ", 12, 32, 369));
+
+        Text scProductsBought = text(totalProducts + " tk", 18, 106, 141);
+        root.getChildren().add(scProductsBought);
+
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.HALF_EVEN);
+
+        Text scMoneySpent = text(df.format(totalPrice) + " €", 18, 357, 142);
+        root.getChildren().add(scMoneySpent);
+
+        // ---
+
+        Button scDisableSave = button("Ära salvesta seda ostukorda", 188, 25, 32, 471);
+        scDisableSave.setOnAction(e -> {
+            saveTrip = false;
+            scDisableSave.setDisable(true);
+        });
+        root.getChildren().add(scDisableSave);
+
+        Button scSendSummary = button("Saada kokkuvõte", 188, 25, 230, 471);
+        root.getChildren().add(scSendSummary);
+
+        Button scBackToMenu = button("Tagasi menüüsse", 387, 25, 32, 503);
+        scBackToMenu.setOnAction(e -> {
+
+            scene.setRoot(mainMenuPage());
+
+            if (saveTrip) {
+                user.setTotalVisits(user.getTotalVisits() + 1);
+                user.setTotalBought(user.getTotalBought() + totalProducts);
+                user.setTotalSpent(user.getTotalSpent() + totalPrice);
+
+                // TODO
+                user.setTotalSaved(user.getTotalSaved() + 0.69);
+                user.setMostVisited("?");
+
+
+                try {
+                    Files.write(Path.of(user.getPath() + "\\" + user.getInfoFileName()), user.userInfoString().getBytes());
+                } catch (IOException ignored) {}
+
+            }
+
+            saveTrip = true;
+            totalProducts = 0;
+            totalPrice = 0;
+            totalLength = 0.0;
+
+        });
+
+        root.getChildren().add(scBackToMenu);
 
         return root;
 
