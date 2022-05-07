@@ -4,22 +4,24 @@ import javafx.scene.image.Image;
 
 public class Product implements Comparable<Product> {
     private final String store;
-    private final DiscountType discountType;
+    private DiscountType discountType;
     private final String name;
     private final double currentPrice;
-    private final double preSalePrice;
-    private final String imgURL;
+    private double preSalePrice;
+    private String imgURL;
+    private String link;
 
-    private final Image image;
+    // private final Image image;
 
-    Product(String store, String name, double price, DiscountType discountType, String imgURL, double preSalePrice) {
+    Product(String store, String name, double price, DiscountType discountType, String imgURL, double preSalePrice, String link) {
         this.store = store;
         this.name = name;
         this.currentPrice = price;
         this.discountType = discountType;
         this.imgURL = imgURL;
         this.preSalePrice = preSalePrice;
-        this.image = new Image(imgURL, 90, 90, true, false);
+        this.link = link;
+        // this.image = new Image(imgURL, 90, 90, true, false);
     }
 
     public String getName() {
@@ -38,9 +40,11 @@ public class Product implements Comparable<Product> {
         return imgURL;
     }
 
+    /*
     public Image getImage() {
         return image;
     }
+    */
 
     public DiscountType getDiscountType() {
         return discountType;
@@ -48,6 +52,10 @@ public class Product implements Comparable<Product> {
 
     public double getPreSalePrice() {
         return preSalePrice;
+    }
+
+    public String getLink() {
+        return link;
     }
 
     @Override

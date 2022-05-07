@@ -45,16 +45,17 @@ public class Selver {
                     String name = info.findElement(By.className("ProductCard__link")).getText();
                     String priceString = info.findElement(By.className("ProductPrice")).getText();
                     double price = Double.parseDouble(priceString.split(" ")[0].replace(",", "."));
+                    String link = item.findElement(By.tagName("a")).getAttribute("href");
 
                     if (item.findElements(By.className("ProductBadge__badge--label")).size() > 0) {
                         WebElement badge = item.findElement(By.className("ProductBadge__badge--label"));
 
                         if (!badge.getText().equals("")) {
                             double salePrice = Double.parseDouble(badge.getText().replace(",", ".").replace(" €", ""));
-                            allProducts.add(new Product("Selver", name, salePrice, DiscountType.discountCard, imgURL, price));
+                            allProducts.add(new Product("Selver", name, salePrice, DiscountType.discountCard, imgURL, price, link));
                         }
                     } else {
-                        allProducts.add(new Product("Selver", name, price, DiscountType.noDiscount, imgURL, price));
+                        allProducts.add(new Product("Selver", name, price, DiscountType.noDiscount, imgURL, price, link));
                     }
                 }
                 pageCount++;

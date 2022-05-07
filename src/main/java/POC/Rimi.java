@@ -45,6 +45,7 @@ public class Rimi implements Store {
             String imgURL = item.findElement(By.tagName("img")).getAttribute("src");
             String name = item.findElement(By.className("card__name")).getText();
             WebElement priceInfo = item.findElement(By.className("card__details-inner"));
+            String link = item.findElement(By.tagName("a")).getAttribute("href");
 
             double price = -1;
 
@@ -60,19 +61,19 @@ public class Rimi implements Store {
                     // Sometimes the old price is not displayed
                     WebElement oldPriceTag = priceInfo.findElement(By.className("old-price-tag"));
                     double oldPrice = Double.parseDouble(oldPriceTag.getText().replace(",", ".").replace("€", ""));
-                    allProducts.add(new Product("Rimi", name, price, DiscountType.campaign, imgURL, oldPrice));
-                } else allProducts.add(new Product("Rimi", name, price, DiscountType.campaign, imgURL, price));
+                    allProducts.add(new Product("Rimi", name, price, DiscountType.campaign, imgURL, oldPrice, link));
+                } else allProducts.add(new Product("Rimi", name, price, DiscountType.campaign, imgURL, price, link));
             }
 
             else if (item.findElements(By.className("price-badge")).size() > 0) {
                 WebElement priceBadge = item.findElement(By.className("price-badge__price"));
                 List<WebElement> saleInfo = priceBadge.findElements(By.tagName("span"));
                 double salePrice = Double.parseDouble(saleInfo.get(0).getText() + "." + saleInfo.get(1).getText());
-                allProducts.add(new Product("Rimi", name, salePrice, DiscountType.discountCard, imgURL, price));
+                allProducts.add(new Product("Rimi", name, salePrice, DiscountType.discountCard, imgURL, price, link));
             }
 
             else if (price != -1) {
-                allProducts.add(new Product("Rimi", name, price, DiscountType.noDiscount, imgURL, price));
+                allProducts.add(new Product("Rimi", name, price, DiscountType.noDiscount, imgURL, price, link));
             }
         }
 
