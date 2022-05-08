@@ -2,6 +2,8 @@ package com.example.GUI;
 
 import POC.DiscountType;
 import POC.Product;
+import Tee.Location;
+import Tee.Result;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -25,6 +28,7 @@ import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.*;
 
+import static Tee.Test.findPath;
 import static com.example.GUI.GUIevents.*;
 
 public class GUI extends Application {
@@ -40,6 +44,7 @@ public class GUI extends Application {
     private static double totalLength = 0.0;
 
     private static boolean saveTrip = true;
+    private static String storesToSearch = "";
 
     public static void main(String[] args) {
         launch(args);
@@ -146,15 +151,11 @@ public class GUI extends Application {
         root.getChildren().add(regEnterUsername);
 
         PasswordField regEnterPassword = passwordField("Ei tohi sisaldada märki ':'", 250, 25, 158, 145);
-        regEnterPassword.setOnKeyTyped(event -> {
-            regPassword.setUnderline(!validPassword(regEnterPassword.getText()));
-        });
+        regEnterPassword.setOnKeyTyped(event -> regPassword.setUnderline(!validPassword(regEnterPassword.getText())));
         root.getChildren().add(regEnterPassword);
 
         TextField regEnterAge = textField("Sisesta positiivne täisarv", 250, 25, 158, 176);
-        regEnterAge.setOnKeyTyped(event -> {
-            regAge.setUnderline(!validAge(regEnterAge.getText()));
-        });
+        regEnterAge.setOnKeyTyped(event -> regAge.setUnderline(!validAge(regEnterAge.getText())));
         root.getChildren().add(regEnterAge);
 
         root.getChildren().add(line(144, 212, -102, 263));
@@ -167,16 +168,18 @@ public class GUI extends Application {
         regCoords.setUnderline(true);
         root.getChildren().add(regCoords);
 
+        Hyperlink regCoordsHelp = new Hyperlink("Abi");
+        regCoordsHelp.setLayoutX(39);
+        regCoordsHelp.setLayoutY(273);
+        regCoordsHelp.setOnAction(e -> openWebpage("https://i.gyazo.com/c33c7cb93af4f5e2cd3d56e2b6dd4ac5.png"));
+        root.getChildren().add(regCoordsHelp);
+
         TextField regEnterEmail = textField("", 250, 25, 158, 227);
-        regEnterEmail.setOnKeyTyped(event -> {
-            regEmail.setUnderline(!validEmail(regEnterEmail.getText()));
-        });
+        regEnterEmail.setOnKeyTyped(event -> regEmail.setUnderline(!validEmail(regEnterEmail.getText())));
         root.getChildren().add(regEnterEmail);
 
         TextField regEnterCoords = textField("nt kujul 58.3851, 26.7250", 250, 25, 158, 262);
-        regEnterCoords.setOnKeyTyped(event -> {
-            regCoords.setUnderline(!validCoordinates(regEnterCoords.getText()));
-        });
+        regEnterCoords.setOnKeyTyped(event -> regCoords.setUnderline(!validCoordinates(regEnterCoords.getText())));
         root.getChildren().add(regEnterCoords);
 
         root.getChildren().add(text("Olemasolevad kliendikaardid", 12, 42, 334));
@@ -254,6 +257,7 @@ public class GUI extends Application {
 
         Button mainCalculatePath = button("Arvuta tee", 266, 39, 91, 254);
         mainCalculatePath.setFont(new Font(18));
+        mainCalculatePath.setDisable(true);
         root.getChildren().add(mainCalculatePath);
 
         root.getChildren().add(line(122, 304, -30, 236));
@@ -267,10 +271,12 @@ public class GUI extends Application {
 
         Button mainViewHistory = button("Kuva ostuajalugu", 266, 39, 91, 365);
         mainViewHistory.setFont(new Font(18));
+        mainViewHistory.setDisable(true);
         root.getChildren().add(mainViewHistory);
 
         Button mainFriends = button("Halda sõpru", 266, 39, 91, 414);
         mainFriends.setFont(new Font(18));
+        mainFriends.setDisable(true);
         root.getChildren().add(mainFriends);
 
         Button mainLogOut = button("Logi välja", 266, 39, 91, 463);
@@ -707,7 +713,9 @@ public class GUI extends Application {
         root.getChildren().add(text("Kokkuvõte", 28, 155, 95));
         root.getChildren().add(text("Tooteid: ", 18, 32, 141));
         root.getChildren().add(text("Kokku: ", 18, 298, 141));
-        root.getChildren().add(text("Teekond: ", 12, 32, 369));
+
+        Text teekond = text("Teekond: ", 12, 32, 369);
+        root.getChildren().add(teekond);
 
         Text scProductsBought = text(totalProducts + " tk", 18, 106, 141);
         root.getChildren().add(scProductsBought);
@@ -718,7 +726,11 @@ public class GUI extends Application {
         Text scMoneySpent = text(df.format(totalPrice) + " €", 18, 357, 142);
         root.getChildren().add(scMoneySpent);
 
-        // ---
+        Result res = findPath(coordsToLoc(user.getLocation()), lookFor(purchased));
+        teekond.setText("Teekond: " + res.getDistanceKM() + " km (linnulennult)");
+
+        Text path = text(res.pathToString(), 12, 41, 386);
+        root.getChildren().add(path);
 
         Button scDisableSave = button("Ära salvesta seda ostukorda", 188, 25, 32, 471);
         scDisableSave.setOnAction(e -> {
@@ -727,10 +739,16 @@ public class GUI extends Application {
         });
         root.getChildren().add(scDisableSave);
 
-        Button scSendSummary = button("Saada kokkuvõte", 188, 25, 230, 471);
+        Button scSendSummary = button("Saada kokkuvõte", 188, 25, 32, 503);
         root.getChildren().add(scSendSummary);
 
-        Button scBackToMenu = button("Tagasi menüüsse", 387, 25, 32, 503);
+        Button mapsLink = button("Ava Google Maps", 188, 25, 230, 471);
+        mapsLink.setOnAction(e -> {
+            openWebpage(res.mapsLink(user.getLocation()));
+        });
+        root.getChildren().add(mapsLink);
+
+        Button scBackToMenu = button("Tagasi menüüsse", 188, 25, 231, 503);
         scBackToMenu.setOnAction(e -> {
 
             scene.setRoot(mainMenuPage());

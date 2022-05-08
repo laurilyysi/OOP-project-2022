@@ -13,14 +13,26 @@ public class Result implements Comparable<Result> {
     }
 
     public String pathToString() {
-        StringBuilder str = new StringBuilder(" • ");
-        path.forEach(loc -> str.append(loc.getName()).append(" -> "));
-        return str.substring(0, str.length() - 3);
+        StringBuilder str = new StringBuilder("");
+        path.forEach(loc -> str.append(loc.getName()).append("\n"));
+        return str.substring(0, str.length() - 1);
     }
 
-    @Override
-    public String toString() {
-        return distanceKM + " km\n" + pathToString();
+    public double getDistanceKM() {
+        return distanceKM;
+    }
+
+    public String mapsLink(String startLoc) {
+
+        StringBuilder link = new StringBuilder("https://www.google.com/maps/dir/");
+        link.append(startLoc.replaceAll(" ", "")).append("/");
+
+        for (Location loc : path) {
+            link.append(loc.getLinkCoords()).append("/");
+        }
+
+        return link.toString();
+
     }
 
     @Override
@@ -29,3 +41,6 @@ public class Result implements Comparable<Result> {
     }
 
 }
+
+
+// https://www.google.com/maps/dir/58.37448,26.7578/58.3751,26.7562/58.3733,26.7511/

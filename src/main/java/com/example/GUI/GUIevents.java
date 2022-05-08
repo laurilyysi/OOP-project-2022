@@ -1,6 +1,7 @@
 package com.example.GUI;
 
 import POC.*;
+import Tee.Location;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -61,9 +62,7 @@ public class GUIevents {
     }
 
     public static boolean validCoordinates(String coords) {
-        Pattern regex = Pattern.compile("^(-?\\d+(\\.\\d+)?),\\s*(-?\\d+(\\.\\d+)?)$");
-        Matcher matcher = regex.matcher(coords);
-        return matcher.find();
+        return coords.matches("^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$");
     }
 
     public static User login(String username, String password) {
@@ -190,6 +189,38 @@ public class GUIevents {
         } catch (Exception e) {
             System.out.println("exc");
         }
+
+    }
+
+    public static String pathBetween(Product product) {
+        return product.getStore().substring(0, 1);
+    }
+
+    public static Location coordsToLoc(String location) {
+
+        String[] coords;
+
+        try {
+            coords = location.split(", ");
+        } catch (NumberFormatException e) {
+            coords = location.split(",");
+        }
+
+        return new Location(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]));
+
+    }
+
+    public static String lookFor(HashMap<Product, Integer> purchased) {
+
+        StringBuilder lookFor = new StringBuilder("");
+
+        for (Product product : purchased.keySet()) {
+            String lookIn = pathBetween(product);
+            if (!lookFor.toString().contains(lookIn)) lookFor.append(lookIn);
+            if (lookFor.length() == 5) return lookFor.toString();
+        }
+
+        return lookFor.toString();
 
     }
 
