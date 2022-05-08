@@ -2,7 +2,6 @@ package com.example.GUI;
 
 import POC.DiscountType;
 import POC.Product;
-import Tee.Location;
 import Tee.Result;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -18,14 +17,16 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import javafx.util.converter.LocalDateTimeStringConverter;
 
 import java.io.*;
 import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static Tee.Test.findPath;
@@ -255,10 +256,10 @@ public class GUI extends Application {
         });
         root.getChildren().add(mainGoShopping);
 
-        Button mainCalculatePath = button("Arvuta tee", 266, 39, 91, 254);
-        mainCalculatePath.setFont(new Font(18));
-        mainCalculatePath.setDisable(true);
-        root.getChildren().add(mainCalculatePath);
+        Button button3 = button(" ", 266, 39, 91, 254);
+        button3.setFont(new Font(18));
+        button3.setDisable(true);
+        root.getChildren().add(button3);
 
         root.getChildren().add(line(122, 304, -30, 236));
 
@@ -271,13 +272,13 @@ public class GUI extends Application {
 
         Button mainViewHistory = button("Kuva ostuajalugu", 266, 39, 91, 365);
         mainViewHistory.setFont(new Font(18));
-        mainViewHistory.setDisable(true);
+        mainViewHistory.setOnAction(e -> scene.setRoot(shoppingHistory()));
         root.getChildren().add(mainViewHistory);
 
-        Button mainFriends = button("Halda sõpru", 266, 39, 91, 414);
-        mainFriends.setFont(new Font(18));
-        mainFriends.setDisable(true);
-        root.getChildren().add(mainFriends);
+        Button button6 = button(" ", 266, 39, 91, 414);
+        button6.setFont(new Font(18));
+        button6.setDisable(true);
+        root.getChildren().add(button6);
 
         Button mainLogOut = button("Logi välja", 266, 39, 91, 463);
         mainLogOut.setFont(new Font(18));
@@ -682,11 +683,15 @@ public class GUI extends Application {
         VBox vbox = new VBox();
         scScrollPane.setContent(vbox);
 
+        StringBuilder data = new StringBuilder("");
+
         for (Product product : purchased.keySet()) {
 
             Pane pane = pane(370, 75);
 
-            Text amount = text(purchased.get(product) + "tk", 16, 14, 43);
+            String strAmount = String.valueOf(purchased.get(product));
+
+            Text amount = text(strAmount + "tk", 16, 14, 43);
             pane.getChildren().add(amount);
 
             String productNameString = product.getName();
@@ -695,16 +700,21 @@ public class GUI extends Application {
             name.setWrappingWidth(210);
             pane.getChildren().add(name);
 
-            Text price = text(product.getPrice() + " €", 16, 268, 43);
+            String strPrice = String.valueOf(product.getPrice());
+
+            Text price = text(strPrice + " €", 16, 268, 43);
             pane.getChildren().add(price);
 
             Button info = button("Info", 42, 25, 320, 25);
             info.setOnAction(e -> {
                 openWebpage(product.getLink());
             });
+
             pane.getChildren().add(info);
 
             vbox.getChildren().add(pane);
+
+            data.append(product.getStore() + "\t" + strAmount + "\t" + productNameString + "\t" + strPrice + "\n");
 
         }
 
@@ -762,10 +772,19 @@ public class GUI extends Application {
                 user.setTotalSaved(user.getTotalSaved() + 0.69);
                 user.setMostVisited("?");
 
-
                 try {
                     Files.write(Path.of(user.getPath() + "\\" + user.getInfoFileName()), user.userInfoString().getBytes());
                 } catch (IOException ignored) {}
+
+                String savePath = "data\\userdata\\" + user.getUsername() + "\\" + user.getUsername() + "_shop" + user.getTotalVisits() + ".txt";
+                StringBuilder info = new StringBuilder(LocalDateTime.now() + "\t" + df.format(totalPrice) + "\n");
+                data.append(info);
+
+                try {
+                    Files.write(Path.of(savePath), data.toString().getBytes());
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
 
             }
 
@@ -777,6 +796,86 @@ public class GUI extends Application {
         });
 
         root.getChildren().add(scBackToMenu);
+
+        return root;
+
+    }
+
+    private static Group shoppingHistory() {
+
+        Group root = new Group();
+
+        Text title = text("Ajalugu", 28, 178, 82);
+        root.getChildren().add(title);
+
+        Text time = text("Aeg: ", 18, 33, 131);
+        root.getChildren().add(time);
+
+        Text ttlPrice = text("00.00 €", 18, 357, 131);
+        root.getChildren().add(ttlPrice);
+
+        ScrollPane scrollPane = scrollpane(387, 280, 32, 147);
+        VBox vbox = new VBox();
+        scrollPane.setContent(vbox);
+        root.getChildren().add(scrollPane);
+
+        Text choose = text("Vali", 12, 32, 453);
+        root.getChildren().add(choose);
+
+        ChoiceBox<String> choices = new ChoiceBox<>();
+        choices.setPrefSize(351, 25);
+        choices.setLayoutX(68);
+        choices.setLayoutY(436);
+
+        ArrayList<String> options = new ArrayList<>();
+        for (int i = 1; i <= user.getTotalVisits(); i++) options.add(user.getUsername() + "_shop" + i + ".txt");
+        ObservableList<String> dropdownItems = FXCollections.observableArrayList(options);
+        choices.setItems(dropdownItems);
+        choices.setOnAction(e -> {
+
+            File shop = new File("data/userdata/" + user.getUsername() + "/" + choices.getValue());
+            try (Scanner scan = new Scanner(new FileInputStream(shop))) {
+                while (scan.hasNextLine()) {
+
+                    String line = scan.nextLine();
+                    try {
+                        String[] split = line.split("\t");
+
+                        Pane pane = pane(370, 75);
+
+                        Text amount = text(split[1] + " tk", 16, 14, 43);
+                        pane.getChildren().add(amount);
+
+                        String productNameString = split[2];
+                        Text name = text(productNameString, 12, 54, 43);
+                        name.setWrappingWidth(210);
+                        pane.getChildren().add(name);
+
+                        String strPrice = split[3];
+                        Text price = text(strPrice + " €", 16, 268, 43);
+                        pane.getChildren().add(price);
+
+                        vbox.getChildren().add(pane);
+
+                    } catch (Exception exception) {
+                        String[] split = line.split("\t");
+                        String[] datetime = split[0].split("T");
+                        time.setText(datetime[0] + " " + datetime[1].substring(0, 8));
+                        ttlPrice.setText(split[1] + " €");
+                    }
+
+                }
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            }
+
+
+        });
+        root.getChildren().add(choices);
+
+        Button menu = button("Tagasi menüüsse", 387, 25, 32, 488);
+        menu.setOnAction(e -> scene.setRoot(mainMenuPage()));
+        root.getChildren().add(menu);
 
         return root;
 
