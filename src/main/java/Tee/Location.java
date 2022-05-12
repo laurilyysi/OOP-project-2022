@@ -43,6 +43,10 @@ public class Location {
         return calculatedDistance;
     }
 
+    public String getLinkCoords() {
+        return lat + "," + lon;
+    }
+
     public void setCalculatedDistance(double calculatedDistance) {
         this.calculatedDistance = calculatedDistance;
     }

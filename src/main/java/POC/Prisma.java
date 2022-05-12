@@ -50,6 +50,7 @@ public class Prisma implements Store {
                 WebElement img = item.findElement(By.className("js-image-wrapper"));
                 String imgURL = img.findElement(By.tagName("img")).getAttribute("src");
                 String name = item.findElement(By.className("name")).getText();
+                String link = item.findElement(By.tagName("a")).getAttribute("href");
 
                 String integer = item.findElement(By.className("whole-number")).getText();
                 String cents = item.findElement(By.className("decimal")).getText();
@@ -58,8 +59,8 @@ public class Prisma implements Store {
                 if (item.findElements(By.className("discount-price")).size() > 0) {
                     String preSalePriceString = item.findElement(By.className("discount-price")).getText();
                     double preSalePrice = parseDouble(preSalePriceString.replace(",", ".").replace(" €", ""));
-                    products.add(new Product("Prisma", name, price, DiscountType.campaign, imgURL, preSalePrice));
-                } else products.add(new Product("Prisma", name, price, DiscountType.noDiscount, imgURL, price));
+                    products.add(new Product("Prisma", name, price, DiscountType.campaign, imgURL, preSalePrice, link));
+                } else products.add(new Product("Prisma", name, price, DiscountType.noDiscount, imgURL, price, link));
 
             }
         }

@@ -84,6 +84,7 @@ public class Coop implements Store {
             String integer = item.findElement(By.className("integer")).getText();
             String cents = item.findElement(By.className("decimal")).getText().split(" ")[0];
             double price = Double.parseDouble(integer + "." + cents);
+            String link = item.findElement(By.tagName("a")).getAttribute("href");
 
             // Determining if product is on sale
             String priceTag = item.findElement(By.tagName("app-price-tag")).getAttribute("class");
@@ -94,14 +95,14 @@ public class Coop implements Store {
                 double regularPrice = Double.parseDouble(pricesInfo.getText().split(" ")[0]);
 
                 if (priceTag.equals("discount-card"))
-                    products.add(new Product("Coop", name, price, DiscountType.discountCard, imgURL, regularPrice));
+                    products.add(new Product("Coop", name, price, DiscountType.discountCard, imgURL, regularPrice, link));
                 if (priceTag.equals("discount")) {
-                    products.add(new Product("Coop", name, price, DiscountType.campaign, imgURL, regularPrice));
+                    products.add(new Product("Coop", name, price, DiscountType.campaign, imgURL, regularPrice, link));
                 }
             }
             // If discount is regular
             else {
-                products.add(new Product("Coop", name, price, DiscountType.noDiscount, imgURL, price));
+                products.add(new Product("Coop", name, price, DiscountType.noDiscount, imgURL, price, link));
             }
 
         }

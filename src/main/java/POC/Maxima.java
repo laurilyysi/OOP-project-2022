@@ -34,17 +34,19 @@ public class Maxima implements Store {
                     String imgURL = item.findElement(By.tagName("img")).getAttribute("src");
                     String[] info = item.getText().split("\n");
                     String name = info[0];
+                    String link = item.findElement(By.tagName("a")).getAttribute("href");
 
                     if (item.findElements(By.className("b-product-promo-label-primary")).size() > 0) {
                         String[] prices = info[1].replaceAll("€", "").split(" ");
                         double oldPrice = Double.parseDouble(prices[0]);
                         double salePrice = Double.parseDouble(prices[1]);
-                        allProducts.add(new Product("Maxima", name, salePrice, DiscountType.campaign, imgURL, oldPrice));
+                        allProducts.add(new Product("Maxima", name, salePrice, DiscountType.campaign, imgURL, oldPrice, link));
                     }
                     else {
                         double price = Double.parseDouble(info[1].replace("€", ""));
-                        allProducts.add(new Product("Maxima", name, price, DiscountType.noDiscount, imgURL, price));
+                        allProducts.add(new Product("Maxima", name, price, DiscountType.noDiscount, imgURL, price, link));
                     }
+
                 }
                 else {
                     if (debug) System.out.println("[Maxima] Product unavailable");
