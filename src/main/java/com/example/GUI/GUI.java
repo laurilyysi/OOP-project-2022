@@ -834,7 +834,7 @@ public class GUI extends Application {
         ObservableList<String> dropdownItems = FXCollections.observableArrayList(options);
         choices.setItems(dropdownItems);
         choices.setOnAction(e -> {
-
+            vbox.getChildren().clear();
             File shop = new File("data/userdata/" + user.getUsername() + "/" + choices.getValue());
             try (Scanner scan = new Scanner(new FileInputStream(shop))) {
                 while (scan.hasNextLine()) {
