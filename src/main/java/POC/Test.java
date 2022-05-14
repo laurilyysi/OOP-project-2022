@@ -20,7 +20,7 @@ public class Test {
 
 
         ArrayList<Thread> listOfWorkers = new ArrayList<>();
-        /*int freeProcessors = Runtime.getRuntime().availableProcessors();
+        int freeProcessors = Runtime.getRuntime().availableProcessors();
 
         for (String product : products) {
             for (StoreName storeName : storeNames) {
@@ -44,6 +44,6 @@ public class Test {
 
 
         long end = System.nanoTime();
-        System.out.println(end - start1);*/
+        System.out.println(end - start1);
     }
 }

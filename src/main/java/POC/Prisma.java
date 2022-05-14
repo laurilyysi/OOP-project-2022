@@ -5,6 +5,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -13,11 +14,6 @@ import java.util.List;
 import static java.lang.Double.parseDouble;
 
 public class Prisma implements Store {
-    // TODO: 3/30/2022 Suggestion to make products that can be found by
-    //  this method, be searched by the links in prismamarket.ee that can
-    //  be accessed in the searchbar on the left side of the website. Products like these are "makaron", "riis", "Krõpsud" and others.
-    //  This method would remove all unrelated products on these searches
-
     // change this variable manually to see info during runtime
     // true - program outputs status info into the console
     // false - no system output (preferred when not testing)
@@ -28,7 +24,9 @@ public class Prisma implements Store {
         List<Product> products = new ArrayList<>();
 
         WebDriverManager.chromedriver().setup();
-        WebDriver driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless");
+        WebDriver driver = new ChromeDriver(options);
 
         String url = "https://www.prismamarket.ee/products/search/" + keyword;
         driver.get(url);

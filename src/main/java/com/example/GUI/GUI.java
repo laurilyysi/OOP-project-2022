@@ -387,8 +387,10 @@ public class GUI extends Application {
             user.clearList();
             readListFromUserFile(user.getUserShoppingListFile(), user.getShoppinglist());
 
-            result = beginSearch(user.getShoppinglist(), checkCoop.isSelected(), checkMaxima.isSelected(),
-                    checkPrisma.isSelected(), checkRimi.isSelected(), checkSelver.isSelected());
+            try {
+                result = beginSearch(user.getShoppinglist(), checkCoop.isSelected(), checkMaxima.isSelected(),
+                        checkPrisma.isSelected(), checkRimi.isSelected(), checkSelver.isSelected());
+            } catch (InterruptedException ignore) {}
 
             scene.setRoot(shoppingScene());
 

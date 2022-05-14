@@ -382,20 +382,66 @@ public class GUIevents {
 
     public static ArrayList<HashMap<String, ArrayList<Product>>>
     beginSearch(List<String> shoppinglist,
-                boolean checkCoop, boolean checkMaxima, boolean checkPrisma, boolean checkRimi, boolean checkSelver) {
+                boolean checkCoop, boolean checkMaxima, boolean checkPrisma, boolean checkRimi, boolean checkSelver) throws InterruptedException {
 
         ArrayList<HashMap<String, ArrayList<Product>>> result = new ArrayList<>();
 
+        ArrayList<Thread> listOfWorkers = new ArrayList<>();
+        int freeProcessors = Runtime.getRuntime().availableProcessors();
+
         for (String name : shoppinglist) {
+
+            if (listOfWorkers.size() > freeProcessors) {
+                for (int i = 0; i < listOfWorkers.size(); i++) {
+                    listOfWorkers.get(i).join();
+                    listOfWorkers.remove(listOfWorkers.get(i));
+                }
+            }
 
             HashMap<String, ArrayList<Product>> map = new HashMap<>();
             map.put(name, new ArrayList<>());
 
-            if (checkCoop) map.get(name).addAll(Coop.searchProducts(name));
-            if (checkMaxima) map.get(name).addAll(Maxima.searchProducts(name));
-            if (checkPrisma) map.get(name).addAll(Prisma.searchProducts(name));
-            if (checkRimi) map.get(name).addAll(Rimi.searchProducts(name));
-            if (checkSelver) map.get(name).addAll(Selver.searchProducts(name));
+            if (checkCoop) {
+                Thread worker = new Thread(new Worker(StoreName.coop, name));
+
+                listOfWorkers.add(worker);
+                worker.start();
+
+                map.get(name).addAll(Coop.searchProducts(name));
+            }
+            if (checkMaxima) {
+                Thread worker = new Thread(new Worker(StoreName.maxima, name));
+
+                listOfWorkers.add(worker);
+                worker.start();
+                map.get(name).addAll(Maxima.searchProducts(name));
+            }
+            if (checkPrisma) {
+                Thread worker = new Thread(new Worker(StoreName.prisma, name));
+
+                listOfWorkers.add(worker);
+                worker.start();
+                map.get(name).addAll(Prisma.searchProducts(name));
+            }
+            if (checkRimi) {
+                Thread worker = new Thread(new Worker(StoreName.rimi, name));
+
+                listOfWorkers.add(worker);
+                worker.start();
+                map.get(name).addAll(Rimi.searchProducts(name));
+            }
+            if (checkSelver) {
+                Thread worker = new Thread(new Worker(StoreName.selver, name));
+
+                listOfWorkers.add(worker);
+                worker.start();
+                map.get(name).addAll(Selver.searchProducts(name));
+            }
+
+            for (int i = 0; i < listOfWorkers.size(); i++) {
+                listOfWorkers.get(i).join();
+                listOfWorkers.remove(listOfWorkers.get(i));
+            }
 
             result.add(map);
 

@@ -8,8 +8,6 @@ public class Worker implements Runnable{
     StoreName storeName;
     String product;
     List<Product> products;
-    Product cheapestProduct;
-    double cheapestPrice = Double.MAX_VALUE;
 
     public Worker(StoreName storeName, String product) {
         this.storeName = storeName;
@@ -34,14 +32,8 @@ public class Worker implements Runnable{
             products = Selver.searchProducts(product);
         }
         System.out.println(storeName);
-        for (Product product : products) {
-            if (product.getPrice() < cheapestPrice) {
-                cheapestProduct = product;
-            }
-        }
 
         // OptionsController.addToCheapestProductsArrayList(cheapestProduct);
-        System.out.println(cheapestProduct.toString());
     }
 
 

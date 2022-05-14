@@ -11,8 +11,6 @@ public class Product implements Comparable<Product> {
     private String imgURL;
     private String link;
 
-    // private final Image image;
-
     Product(String store, String name, double price, DiscountType discountType, String imgURL, double preSalePrice, String link) {
         this.store = store;
         this.name = name;
@@ -21,7 +19,6 @@ public class Product implements Comparable<Product> {
         this.imgURL = imgURL;
         this.preSalePrice = preSalePrice;
         this.link = link;
-        // this.image = new Image(imgURL, 90, 90, true, false);
     }
 
     public String getName() {
@@ -35,16 +32,6 @@ public class Product implements Comparable<Product> {
     public double getPrice() {
         return currentPrice;
     }
-
-    public String getImgURL() {
-        return imgURL;
-    }
-
-    /*
-    public Image getImage() {
-        return image;
-    }
-    */
 
     public DiscountType getDiscountType() {
         return discountType;
