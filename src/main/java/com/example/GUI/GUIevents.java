@@ -308,6 +308,7 @@ public class GUIevents {
     public static TextField textField(String prompt, int pref_x, int pref_y, int x, int y) {
 
         TextField textField = new TextField();
+        textField.setPromptText(prompt);
         textField.setPrefSize(pref_x, pref_y);
         textField.setLayoutX(x);
         textField.setLayoutY(y);
