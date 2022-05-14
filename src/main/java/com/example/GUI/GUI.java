@@ -3,6 +3,7 @@ package com.example.GUI;
 import POC.DiscountType;
 import POC.Product;
 import Tee.Result;
+import Tee.Test;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,6 +31,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static Tee.Test.findPath;
+import static Tee.Test.findShortestPaths;
 import static com.example.GUI.GUIevents.*;
 
 public class GUI extends Application {
@@ -428,16 +430,12 @@ public class GUI extends Application {
 
             kuvaTab.getChildren().add(text("Tooteid kokku: ", 16, 25, 430));
             kuvaTab.getChildren().add(text("Hind kokku: ", 16, 25, 455));
-            kuvaTab.getChildren().add(text("Lühim tee: ", 16, 25, 480));
 
             Text totalProductsCount = text(String.valueOf(totalProducts), 16, 160, 430);
             kuvaTab.getChildren().add(totalProductsCount);
 
             Text totalPriceCount = text(totalPrice + " €", 16, 160, 455);
             kuvaTab.getChildren().add(totalPriceCount);
-
-            Text totalLengthCount = text(totalLength + " km", 16, 160, 480);
-            kuvaTab.getChildren().add(totalLengthCount);
 
         kuva.setContent(kuvaTab);
 
@@ -738,7 +736,9 @@ public class GUI extends Application {
         Text scMoneySpent = text(df.format(totalPrice) + " €", 18, 357, 142);
         root.getChildren().add(scMoneySpent);
 
-        Result res = findPath(coordsToLoc(user.getLocation()), lookFor(purchased));
+        String[] coords = user.getLocation().split(", ");
+        findShortestPaths(Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), lookFor(purchased));
+        Result res = Test.paths.get(0);
         teekond.setText("Teekond: " + res.getDistanceKM() + " km (linnulennult)");
 
         Text path = text(res.pathToString(), 12, 41, 386);

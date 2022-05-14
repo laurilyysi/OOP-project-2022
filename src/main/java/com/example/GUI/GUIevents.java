@@ -318,8 +318,8 @@ public class GUIevents {
     }
 
     public static PasswordField passwordField(String prompt, int pref_x, int pref_y, int x, int y) {
-
         PasswordField passwordField = new PasswordField();
+        passwordField.setPromptText(prompt);
         passwordField.setPrefSize(pref_x, pref_y);
         passwordField.setLayoutX(x);
         passwordField.setLayoutY(y);
