@@ -131,8 +131,4 @@ public class Test {
         return locations;
     }
 
-    public static boolean validCoordinates(String coords) {
-        return coords.matches("^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$");
-    }
-
 }

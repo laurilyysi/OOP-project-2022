@@ -41,6 +41,3 @@ public class Result implements Comparable<Result> {
     }
 
 }
-
-
-// https://www.google.com/maps/dir/58.37448,26.7578/58.3751,26.7562/58.3733,26.7511/

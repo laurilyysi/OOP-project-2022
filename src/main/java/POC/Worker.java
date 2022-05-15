@@ -1,7 +1,5 @@
 package POC;
 
-// import com.example.fxUI.OptionsController;
-
 import java.util.List;
 
 public class Worker implements Runnable{
@@ -33,7 +31,6 @@ public class Worker implements Runnable{
         }
         System.out.println(storeName);
 
-        // OptionsController.addToCheapestProductsArrayList(cheapestProduct);
     }
 
 

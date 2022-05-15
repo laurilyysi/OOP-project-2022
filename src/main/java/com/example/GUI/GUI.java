@@ -15,8 +15,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -120,26 +118,6 @@ public class GUI extends Application {
             scene.setRoot(registrationPage());
         });
         root.getChildren().add(loginNoAccount);
-
-        return root;
-
-    }
-
-    private static Group kms() {
-
-        Group root = new Group();
-
-
-        Image logo = null;
-        try {
-            logo = new Image(new FileInputStream("src/main/resources/coop.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        ImageView logoview = new ImageView(logo);
-        logoview.setX(120);
-        logoview.setY(120);
-        root.getChildren().add(logoview);
 
         return root;
 
@@ -507,15 +485,6 @@ public class GUI extends Application {
                         Text discountPrice = displayDiscountPrice(product);
                         pane.getChildren().add(discountPrice);
                     } else productPrice = displayPrice(product);
-
-                    /*
-                    Image image = product.getImage(); // new Image(product.getImgURL(), 90, 90, true, false);
-                    ImageView imgView = new ImageView(image);
-                    imgView.setX(6);
-                    imgView.setY(6);
-                    imgView.prefHeight(90);
-                    imgView.prefWidth(90);
-                    */
 
                     pane.getChildren().add(logo(product.getStore()));
 
