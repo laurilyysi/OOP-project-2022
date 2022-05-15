@@ -8,6 +8,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -15,10 +17,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -379,6 +378,25 @@ public class GUIevents {
         return pane;
 
     }
+
+    public static ImageView logo(String store) {
+
+        Image logo = null;
+
+        try {
+            logo = new Image(new FileInputStream("src/main/resources/" + store + ".png"));
+        } catch (FileNotFoundException ignored) {}
+
+        ImageView logoview = new ImageView(logo);
+        logoview.setFitHeight(32);
+        logoview.setFitWidth(32);
+        logoview.setX(35);
+        logoview.setY(34);
+
+        return logoview;
+
+    }
+
 
     public static ArrayList<HashMap<String, ArrayList<Product>>>
     beginSearch(List<String> shoppinglist,

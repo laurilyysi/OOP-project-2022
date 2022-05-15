@@ -15,22 +15,21 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.converter.LocalDateTimeStringConverter;
 
 import java.io.*;
 import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static Tee.Test.findPath;
 import static Tee.Test.findShortestPaths;
 import static com.example.GUI.GUIevents.*;
 
@@ -121,6 +120,26 @@ public class GUI extends Application {
             scene.setRoot(registrationPage());
         });
         root.getChildren().add(loginNoAccount);
+
+        return root;
+
+    }
+
+    private static Group kms() {
+
+        Group root = new Group();
+
+
+        Image logo = null;
+        try {
+            logo = new Image(new FileInputStream("src/main/resources/coop.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        ImageView logoview = new ImageView(logo);
+        logoview.setX(120);
+        logoview.setY(120);
+        root.getChildren().add(logoview);
 
         return root;
 
@@ -498,6 +517,8 @@ public class GUI extends Application {
                     imgView.prefWidth(90);
                     */
 
+                    pane.getChildren().add(logo(product.getStore()));
+
                     Button addTo = button("Lisa korvi", 70, 25, 320, 64);
                     Button removeFrom = button("Eemalda", 70, 25, 320, 64);
 
@@ -588,7 +609,6 @@ public class GUI extends Application {
                     pane.getChildren().add(productName);
                     pane.getChildren().add(productStore);
                     pane.getChildren().add(productPrice);
-                    // pane.getChildren().add(imgView);
                     pane.getChildren().add(addTo);
                     pane.getChildren().add(moreInfo);
 
@@ -599,18 +619,6 @@ public class GUI extends Application {
             });
 
             valiTab.getChildren().add(dropdown);
-
-            /* TODO
-            Button eelmine = new Button("Eelmine");
-            eelmine.setLayoutX(304);
-            eelmine.setLayoutY(408);
-            valiTab.getChildren().add(eelmine);
-
-            Button jargmine = new Button("Järgmine");
-            jargmine.setLayoutX(370);
-            jargmine.setLayoutY(408);
-            valiTab.getChildren().add(jargmine);
-            */
 
             Button lopeta = button("Lõpeta", 80, 80, 355, 410);
             lopeta.setOnAction(event -> {
@@ -640,7 +648,6 @@ public class GUI extends Application {
         root.getChildren().add(text("Kokku tooteid ostetud: ", 18, 57, 211));
         root.getChildren().add(text("Kokku raha kulutatud: ", 18, 57, 278));
         root.getChildren().add(text("Kokku raha säästetud: ", 18, 57, 346));
-        root.getChildren().add(text("Kõige rohkem külastatud: ", 18, 57, 410));
 
         // ---
         Text vpTotal = text(user.getTotalVisits() + "", 18, 330, 147);
@@ -655,14 +662,14 @@ public class GUI extends Application {
         Text vpSaved = text(df.format(user.getTotalSaved()) + " €", 18, 330, 346);
         root.getChildren().add(vpSaved);
 
-        Text vpVisited = text(user.getMostVisited(), 18, 330, 410);
-        root.getChildren().add(vpVisited);
         // ---
 
         Button vpDelete = button("Kustuta andmed", 173, 25, 49, 472);
+        vpDelete.setDisable(true);
         root.getChildren().add(vpDelete);
 
         Button vpSummary = button("Kokkuvõte", 173, 25, 230, 472);
+        vpSummary.setDisable(true);
         root.getChildren().add(vpSummary);
 
         Button vpGoBack = button("Mine tagasi", 356, 25, 48, 504);
@@ -751,7 +758,8 @@ public class GUI extends Application {
         });
         root.getChildren().add(scDisableSave);
 
-        Button scSendSummary = button("Saada kokkuvõte", 188, 25, 32, 503);
+        Button scSendSummary = button(" ", 188, 25, 32, 503);
+        scSendSummary.setDisable(true);
         root.getChildren().add(scSendSummary);
 
         Button mapsLink = button("Ava Google Maps", 188, 25, 230, 471);
@@ -771,8 +779,7 @@ public class GUI extends Application {
                 user.setTotalSpent(user.getTotalSpent() + totalPrice);
 
                 // TODO
-                user.setTotalSaved(user.getTotalSaved() + 0.69);
-                user.setMostVisited("?");
+                user.setTotalSaved(user.getTotalSaved() + 0);
 
                 try {
                     Files.write(Path.of(user.getPath() + "\\" + user.getInfoFileName()), user.userInfoString().getBytes());
